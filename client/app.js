@@ -8,26 +8,31 @@ const App = () => {
 	const [ screenshot, setScreenshot ] = React.useState( null );
 	const [ localized, setLocalized ] = React.useState( [] );
 
-	wsClient.on( 'page:screenshot', ( data ) => {
-		setScreenshot( `data:image/jpeg;base64,${ data }` );
+	wsClient.on( 'page:screenshot', ( payload ) => {
+		setScreenshot( payload );
 	} );
 
 	wsClient.on( 'page:localizedScreenshot', ( data ) => {
-		setLocalized( localized.concat( `data:image/jpeg;base64,${ data }` ) );
+		setLocalized( localized.concat( data ) );
 	} );
 
 	return (
 		<React.StrictMode>
-			<Controls />
+			<Controls screenshot={ screenshot } />
 
 			<ul className="localized-screenshots">
-				{ localized.map( ( img ) => {
+				{ localized.map( ( data ) => {
 					return (
 						<li>
 							<img
-								src={ img }
+								src={ `data:image/jpeg;base64,${ data }` }
 								width="100"
-								onClick={ () => setScreenshot( img ) }
+								onClick={ () =>
+									setScreenshot( {
+										...screenshot,
+										data,
+									} )
+								}
 							/>
 						</li>
 					);
@@ -36,7 +41,9 @@ const App = () => {
 
 			{ screenshot && (
 				<div class="editor-wrapper">
-					<img src={ screenshot } />
+					<img
+						src={ `data:image/jpeg;base64,${ screenshot.data }` }
+					/>
 
 					<Tldraw showMenu={ false } showPages={ false } />
 				</div>

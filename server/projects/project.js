@@ -94,12 +94,24 @@ class Project {
 
 	handleScreenshotRequest = async () => {
 		const screenshot = await this.page.screenshot();
-		this.socket.emit( 'page:screenshot', screenshot.toString( 'base64' ) );
+		const meta = {
+			url: await this.page.url(),
+			scrollX: await this.page.evaluate( () => window.scrollX ),
+			scrollY: await this.page.evaluate( () => window.scrollY ),
+		};
+		const payload = {
+			data: screenshot.toString( 'base64' ),
+			meta,
+		};
+		this.socket.emit( 'page:screenshot', payload );
 	};
 
-	handleLocalizedScreenshotRequest = async ( locales ) => {
+	handleLocalizedScreenshotRequest = async ( { locales, meta } ) => {
 		for ( const locale of locales ) {
-			const screenshot = await this.generateLocalizedScreenshot( locale );
+			const screenshot = await this.generateLocalizedScreenshot( {
+				...meta,
+				locale,
+			} );
 			this.socket.emit(
 				'page:localizedScreenshot',
 				screenshot.toString( 'base64' )
@@ -107,7 +119,7 @@ class Project {
 		}
 	};
 
-	async generateLocalizedScreenshot( locale ) {
+	async generateLocalizedScreenshot( { url, locale, scrollX, scrollY } ) {
 		// @implement
 	}
 }

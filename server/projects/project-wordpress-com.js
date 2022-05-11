@@ -39,10 +39,13 @@ class ProjectWordPressCom extends Project {
 		await this.page.waitForSelector( '.language-picker:not(:disabled)' );
 	}
 
-	async generateLocalizedScreenshot( locale ) {
-		const currentUrl = await this.page.url();
+	async generateLocalizedScreenshot( { url, locale, scrollX, scrollY } ) {
 		await this.changeLocale( locale );
-		await this.page.goto( currentUrl );
+		await this.page.goto( url, { waitUntil: 'networkidle' } );
+		await this.page.evaluate(
+			( scroll ) => window.scrollTo( scroll.scrollX, scroll.scrollY ),
+			{ scrollX, scrollY }
+		);
 		return await this.page.screenshot();
 	}
 }
