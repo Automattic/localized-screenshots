@@ -112,10 +112,13 @@ class Project {
 				...meta,
 				locale,
 			} );
-			this.socket.emit(
-				'page:localizedScreenshot',
-				screenshot.toString( 'base64' )
-			);
+			const payload = {
+				data: screenshot.toString( 'base64' ),
+				meta: {
+					locale,
+				},
+			};
+			this.socket.emit( 'page:localizedScreenshot', payload );
 		}
 	};
 

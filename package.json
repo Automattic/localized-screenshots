@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "run-p dev:serve dev:client dev:server",
 		"dev:serve": "http-server public -p 3003",
-		"dev:client": "wp-scripts build client/index.js --output-path=public/client --watch --webpack-no-externals",
+		"dev:client": "wp-scripts start client/index.js --config=client/webpack.config.js --output-path=public/client --webpack-no-externals",
 		"dev:server": "nodemon --watch server server"
 	},
 	"repository": {
@@ -22,17 +22,18 @@
 	"devDependencies": {
 		"@tldraw/tldraw": "^1.6.1",
 		"@wordpress/prettier-config": "^1.1.1",
-		"@wordpress/scripts": "^20.0.2",
+		"@wordpress/scripts": "^23.2.0",
 		"dotenv": "^16.0.0",
 		"http-server": "^14.1.0",
+		"lodash.set": "^4.3.2",
 		"lodash.throttle": "^4.1.1",
 		"mobx": "^6.5.0",
 		"nodemon": "^2.0.15",
 		"npm-run-all": "^4.1.5",
 		"playwright": "^1.18.1",
 		"prettier": "npm:wp-prettier",
-		"react": "^17.0.2",
-		"react-dom": "^17.0.2",
+		"react": "^18.1.0",
+		"react-dom": "^18.1.0",
 		"socket.io": "^4.4.1",
 		"socket.io-client": "^4.4.1"
 	},

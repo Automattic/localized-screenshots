@@ -1,56 +1,29 @@
 import React from 'react';
-import { Tldraw } from '@tldraw/tldraw';
-import wsClient from './web-sockets';
-import Frame from './frame';
-import Controls from './controls';
 
-const App = () => {
-	const [ screenshot, setScreenshot ] = React.useState( null );
-	const [ localized, setLocalized ] = React.useState( [] );
+import Controls from '/components/controls';
+import Editor, { EditorProvider } from '/components/editor';
+import Frame from '/components/frame';
+import Screenshots from '/components/screenshots';
+import { useCanvasContext } from '/state';
 
-	wsClient.on( 'page:screenshot', ( payload ) => {
-		setScreenshot( payload );
-	} );
-
-	wsClient.on( 'page:localizedScreenshot', ( data ) => {
-		setLocalized( localized.concat( data ) );
-	} );
+export default function App() {
+	const { lockedScreen } = useCanvasContext();
 
 	return (
-		<React.StrictMode>
-			<Controls screenshot={ screenshot } />
+		<EditorProvider>
+			<Controls screenshot={ lockedScreen } />
 
-			<ul className="localized-screenshots">
-				{ localized.map( ( data ) => {
-					return (
-						<li>
-							<img
-								src={ `data:image/jpeg;base64,${ data }` }
-								width="100"
-								onClick={ () =>
-									setScreenshot( {
-										...screenshot,
-										data,
-									} )
-								}
-							/>
-						</li>
-					);
-				} ) }
-			</ul>
+			<Screenshots />
 
-			{ screenshot && (
-				<div class="editor-wrapper">
-					<img
-						src={ `data:image/jpeg;base64,${ screenshot.data }` }
-					/>
+			<Editor />
 
-					<Tldraw showMenu={ false } showPages={ false } />
-				</div>
-			) }
-			{ ! screenshot && <Frame /> }
-		</React.StrictMode>
+			{ /*	<Tldraw
+					showMenu={ false }
+					showPages={ false }
+					showZoom={ false }
+					onMount={ ( a ) => ( window.tldr = a ) }
+				/>*/ }
+			{ ! lockedScreen && <Frame /> }
+		</EditorProvider>
 	);
-};
-
-export default App;
+}

@@ -1,8 +1,8 @@
 import React from 'react';
-import wsClient from './web-sockets';
+import wsClient from '/web-sockets';
 import throttle from 'lodash.throttle';
 
-const Frame = () => {
+export default function Frame() {
 	const frame = React.useRef( null );
 
 	React.useEffect( () => {
@@ -65,6 +65,4 @@ const Frame = () => {
 			<canvas ref={ frame } width="1280" height="720"></canvas>
 		</div>
 	);
-};
-
-export default Frame;
+}

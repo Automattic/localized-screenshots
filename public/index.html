@@ -8,7 +8,7 @@
 			*, *:before, *:after { box-sizing: border-box; }
 			body { margin: 0; padding: 0; background: #f2f3f4; }
 
-			.editor-wrapper { position: relative; width: 1280px; height: 780px; margin: 0 auto; border: 5px solid #708090; box-sizing: content-box; }
+			.editor-wrapper { position: relative; width: 1280px; height: 720px; margin: 0 auto; border: 5px solid #708090; box-sizing: content-box; }
 			.editor-wrapper > div { left: 0; top: 0; }
 			.tl-container { background: none !important; }
 
@@ -18,7 +18,11 @@
 			.controls button { padding: .5em 1em; color: #506070; background: #eee; border: 1px solid #708090; border-radius: 3px; cursor: pointer; font-weight: bold; }
 			.controls button:hover { background: #e5e5e5; }
 
-			.localized-screenshots { position: fixed; left: 0; top: 250px; list-style: none; }
+			.localized-screenshots { position: fixed; left: 10px; top: 200px; margin: 0; padding: 0; width: 200px; text-align: center; list-style: none; }
+			.localized-screenshots button { display: block; position: relative; width: 120px; margin: 0 auto 0.25em; padding: 0.25em; background: #eee; border: 1px solid #708090; cursor: pointer; border-radius: 3px; }
+			.localized-screenshots button:hover { opacity: 0.8; }
+			.localized-screenshots button img { width: 100%; height: auto; vertical-align: top; }
+			.localized-screenshots button span { position: absolute; left: 0.5em; top: 0.5em; padding: .25em; font-weight: bold; background: rgba(255,255,255,.5); border-radius: 3px; }
 		</style>
 	</head>
 	<body>
