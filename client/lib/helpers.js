@@ -4,18 +4,18 @@
  * @param  {string} svg SVG XML string
  * @return {Promise<string>} PNG Base64 string
  */
-export function svgToPNGBase64( svg ) {
+export function svgToPNGBase64( svg, width = 1280, height = 768 ) {
 	return new Promise( ( resolve, reject ) => {
 		const container = document.createElement( 'div' );
 		container.innerHTML = svg;
 
 		const svgEl = container.querySelector( 'svg' );
-		svgEl.setAttribute( 'width', 1280 );
-		svgEl.setAttribute( 'height', 768 );
+		svgEl.setAttribute( 'width', width );
+		svgEl.setAttribute( 'height', height );
 
 		const canvas = document.createElement( 'canvas' );
-		canvas.width = 1280;
-		canvas.height = 768;
+		canvas.width = width;
+		canvas.height = height;
 
 		const data = new XMLSerializer().serializeToString( svgEl );
 		const imgEl = new Image();

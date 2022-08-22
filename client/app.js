@@ -17,12 +17,6 @@ export default function App() {
 
 			<Editor />
 
-			{ /*	<Tldraw
-					showMenu={ false }
-					showPages={ false }
-					showZoom={ false }
-					onMount={ ( a ) => ( window.tldr = a ) }
-				/>*/ }
 			{ ! lockedScreen && <Frame /> }
 		</EditorProvider>
 	);

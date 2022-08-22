@@ -3,12 +3,17 @@ import wsClient from '/web-sockets';
 import { useCanvasContext, useScreenshotsContext } from '/state';
 import { languages } from '/lib/languages';
 import LockedScreenController from './controller';
+import UploadScreenshots from './upload-screenshots';
 
 export default function Controls() {
 	const { lockedScreen } = useCanvasContext();
 	const { screenshots } = useScreenshotsContext();
 	const [ isLoading, setIsLoading ] = React.useState( false );
 	const generateLocalizedScreenshots = () => {
+		if ( isLoading ) {
+			return;
+		}
+
 		const locales = [];
 		// @todo use state.
 		for ( const option of document.querySelector( '#locales' ).options ) {
@@ -20,6 +25,16 @@ export default function Controls() {
 
 		wsClient.emit( 'request:localizedScreenshots', { locales, meta } );
 		setIsLoading( true );
+
+		const screenshotsInQueue = new Set( locales );
+		wsClient.on( 'page:localizedScreenshot', ( { meta } ) => {
+			screenshotsInQueue.delete( meta.locale );
+
+			if ( screenshotsInQueue.size === 0 ) {
+				wsClient.off( 'page:localizedScreenshot' );
+				setIsLoading( false );
+			}
+		} );
 	};
 
 	return (
@@ -39,7 +54,7 @@ export default function Controls() {
 				</li>
 			) }
 
-			{ lockedScreen && (
+			{ lockedScreen && ! screenshots.length && (
 				<li>
 					<select id="locales" multiple>
 						{ languages.map( ( { slug, name } ) => (
@@ -55,9 +70,11 @@ export default function Controls() {
 				</li>
 			) }
 
-			{ isLoading &&
-				screenshots.length === 0 &&
-				'Generating screenshots...' }
+			<li>
+				<UploadScreenshots />
+			</li>
+
+			{ isLoading && 'Generating screenshots...' }
 		</ul>
 	);
 }

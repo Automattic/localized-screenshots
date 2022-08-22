@@ -5,8 +5,6 @@ import { Tldraw } from '@tldraw/tldraw';
 import { useCanvasContext, useScreenshotsContext } from '/state';
 import { useEditorContext } from './context';
 
-import { realignShapesForRTL } from '/lib/helpers';
-
 export default function Editor() {
 	const { lockedScreen, setAnnotations } = useCanvasContext();
 	const { selectedScreenshot, setScreenshots, selectedScreenshotIndex } =

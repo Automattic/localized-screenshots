@@ -3,17 +3,25 @@ import { useScreenshotsContext } from '/state';
 import { useEditorContext } from '/components/editor';
 
 export default function Screenshot( { screenshot, index } ) {
-	const { setSelectedScreenshotIndex } = useScreenshotsContext();
+	const { selectedScreenshotIndex, setSelectedScreenshotIndex } =
+		useScreenshotsContext();
 	const { data, annotations, meta } = screenshot;
 	const editorRef = useEditorContext();
 
 	return (
 		<li>
 			<button
+				className={
+					index === selectedScreenshotIndex ? 'is-active' : ''
+				}
 				onClick={ () => {
 					setSelectedScreenshotIndex( index );
 					editorRef?.current.reset();
-					editorRef?.current.createShapes( ...annotations );
+
+					if ( annotations ) {
+						editorRef?.current.createShapes( ...annotations );
+						editorRef?.current.select();
+					}
 				} }
 			>
 				<img src={ `data:image/jpeg;base64,${ data }` } />

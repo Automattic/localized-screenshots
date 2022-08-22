@@ -1,5 +1,6 @@
 const { Server } = require( 'socket.io' );
-const ProjectWordPressCom = require( './projects/project-wordpress-com' );
+// const ProjectWordPressCom = require( './projects/project-wordpress-com' );
+const ProjectWordPressCom = require( './projects/project-example-com' );
 
 // Load environment variables.
 require( 'dotenv' ).config();
