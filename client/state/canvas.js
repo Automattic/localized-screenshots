@@ -9,6 +9,12 @@ export function useCanvasContext() {
 export function CanvasContextProvider( { children } ) {
 	const [ lockedScreen, setLockedScreen ] = React.useState( null );
 	const [ annotations, setAnnotations ] = React.useState( null );
+	const [ offset, setOffset ] = React.useState( {
+		top: 0,
+		right: 0,
+		bottom: 0,
+		left: 0,
+	} );
 
 	const context = React.useMemo(
 		() => ( {
@@ -16,8 +22,17 @@ export function CanvasContextProvider( { children } ) {
 			setLockedScreen,
 			annotations,
 			setAnnotations,
+			offset,
+			setOffset,
 		} ),
-		[ lockedScreen, setLockedScreen, annotations, setAnnotations ]
+		[
+			lockedScreen,
+			setLockedScreen,
+			annotations,
+			setAnnotations,
+			offset,
+			setOffset,
+		]
 	);
 
 	return (

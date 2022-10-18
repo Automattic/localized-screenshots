@@ -4,7 +4,7 @@ import { svgToPNGBase64 } from '/lib/helpers';
 import { useEditorContext } from '/components/editor';
 
 export default function UploadScreenshots() {
-	const { lockedScreen } = useCanvasContext();
+	const { lockedScreen, offset } = useCanvasContext();
 	const { screenshots, setSelectedScreenshotIndex } = useScreenshotsContext();
 	const editorRef = useEditorContext();
 	const [ isLoading, setIsLoading ] = React.useState( false );
@@ -43,12 +43,12 @@ export default function UploadScreenshots() {
 		const screenshot = new Image();
 		screenshot.src = `data:image/jpeg;base64,${ lockedScreen.data }`;
 		screenshot.onload = () => {
-			canvas.width = screenshot.width;
-			canvas.height = screenshot.height;
+			canvas.width = screenshot.width - ( offset.left + offset.right );
+			canvas.height = screenshot.height - ( offset.top + offset.bottom );
 			canvasContext.drawImage(
 				screenshot,
-				0,
-				0,
+				0 - offset.left,
+				0 - offset.top,
 				screenshot.width,
 				screenshot.height
 			);
@@ -73,17 +73,18 @@ export default function UploadScreenshots() {
 					annotations.onload = () => {
 						canvasContext.drawImage(
 							annotations,
-							bounds.minX,
-							bounds.minY,
+							bounds.minX - offset.left,
+							bounds.minY - offset.top,
 							annotations.width,
 							annotations.height
 						);
 
 						canvas.toBlob( resolve );
+						document.body.appendChild( canvas );
 					};
 				} );
 			} );
-	}, [ editorRef.current ] );
+	}, [ editorRef.current, offset ] );
 
 	const uploadScreenshots = useCallback( async () => {
 		setIsLoading( true );
@@ -126,7 +127,7 @@ export default function UploadScreenshots() {
 		}
 
 		setIsLoading( false );
-	}, [ screenshots, getScreenshotWithAnnotationsBlob ] );
+	}, [ screenshots, getScreenshotWithAnnotationsBlob, offset ] );
 
 	return (
 		<>

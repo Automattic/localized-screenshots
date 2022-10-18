@@ -5,6 +5,90 @@ import { Tldraw } from '@tldraw/tldraw';
 import { useCanvasContext, useScreenshotsContext } from '/state';
 import { useEditorContext } from './context';
 
+function EditorHandle( { position, onChange = () => {} } ) {
+	const isVertical = [ 'top', 'bottom' ].includes( position );
+	const deltaCoef = [ 'top', 'left' ].includes( position ) ? 1 : -1;
+
+	function handleDragging( event ) {
+		let startPos = isVertical ? event.clientY : event.clientX;
+
+		function handleMouseMove( event ) {
+			const currentPos = isVertical ? event.clientY : event.clientX;
+			const delta = ( currentPos - startPos ) * deltaCoef;
+
+			onChange( delta, position );
+		}
+
+		function handleMouseUp( event ) {
+			startPos = isVertical ? event.clientY : event.clientX;
+
+			window.removeEventListener( 'mousemove', handleMouseMove );
+			window.removeEventListener( 'mouseup', handleMouseUp );
+		}
+
+		window.addEventListener( 'mousemove', handleMouseMove );
+		window.addEventListener( 'mouseup', handleMouseUp );
+	}
+
+	return (
+		<button
+			className={ `editor__handle editor__handle--${ position }` }
+			onMouseDown={ handleDragging }
+		/>
+	);
+}
+
+function EditorHandles() {
+	const { offset, setOffset } = useCanvasContext();
+	const style = {
+		borderTopWidth: `${ offset.top }px`,
+		borderRightWidth: `${ offset.right }px`,
+		borderBottomWidth: `${ offset.bottom }px`,
+		borderLeftWidth: `${ offset.left }px`,
+	};
+
+	return (
+		<div className="editor__handles" style={ style }>
+			<EditorHandle
+				position="top"
+				onChange={ ( delta ) =>
+					setOffset( {
+						...offset,
+						top: Math.max( 0, offset.top + delta ),
+					} )
+				}
+			/>
+			<EditorHandle
+				position="right"
+				onChange={ ( delta ) =>
+					setOffset( {
+						...offset,
+						right: Math.max( 0, offset.right + delta ),
+					} )
+				}
+			/>
+			<EditorHandle
+				position="bottom"
+				onChange={ ( delta ) =>
+					setOffset( {
+						...offset,
+						bottom: Math.max( 0, offset.bottom + delta ),
+					} )
+				}
+			/>
+			<EditorHandle
+				position="left"
+				onChange={ ( delta ) =>
+					setOffset( {
+						...offset,
+						left: Math.max( 0, offset.left + delta ),
+					} )
+				}
+			/>
+		</div>
+	);
+}
+
 export default function Editor() {
 	const { lockedScreen, setAnnotations } = useCanvasContext();
 	const { selectedScreenshot, setScreenshots, selectedScreenshotIndex } =
@@ -45,15 +129,21 @@ export default function Editor() {
 	};
 
 	return (
-		<div className="editor-wrapper">
-			<img src={ `data:image/jpeg;base64,${ imageSrc }` } />
+		<div className="editor">
+			<div className="editor__inner">
+				<img src={ `data:image/jpeg;base64,${ imageSrc }` } />
 
-			<Tldraw
-				showMenu={ false }
-				showPages={ false }
-				onMount={ ( editor ) => ( editorRef.current = editor ) }
-				onChange={ handleEditorChange }
-			/>
+				<EditorHandles />
+			</div>
+
+			<div className="editor__annotations">
+				<Tldraw
+					showMenu={ false }
+					showPages={ false }
+					onMount={ ( editor ) => ( editorRef.current = editor ) }
+					onChange={ handleEditorChange }
+				/>
+			</div>
 		</div>
 	);
 }
