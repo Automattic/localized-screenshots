@@ -80,7 +80,6 @@ export default function UploadScreenshots() {
 						);
 
 						canvas.toBlob( resolve );
-						document.body.appendChild( canvas );
 					};
 				} );
 			} );

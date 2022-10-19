@@ -9,9 +9,11 @@ export function svgToPNGBase64( svg, width = 1280, height = 768 ) {
 		const container = document.createElement( 'div' );
 		container.innerHTML = svg;
 
+		const editorPadding = 16; // tldraw hardcoded padding value
 		const svgEl = container.querySelector( 'svg' );
-		svgEl.setAttribute( 'width', width );
-		svgEl.setAttribute( 'height', height );
+		svgEl.setAttribute( 'width', width + editorPadding );
+		svgEl.setAttribute( 'height', height + editorPadding );
+		svgEl.removeAttribute( 'viewBox' );
 
 		const canvas = document.createElement( 'canvas' );
 		canvas.width = width;
@@ -22,7 +24,9 @@ export function svgToPNGBase64( svg, width = 1280, height = 768 ) {
 		const blob = new Blob( [ data ], { type: 'image/svg+xml' } );
 		const blobUrl = window.URL.createObjectURL( blob );
 		imgEl.onload = function () {
-			canvas.getContext( '2d' ).drawImage( imgEl, 0, 0 );
+			canvas
+				.getContext( '2d' )
+				.drawImage( imgEl, -editorPadding, -editorPadding );
 			window.URL.revokeObjectURL( blobUrl );
 
 			resolve( canvas.toDataURL() );
