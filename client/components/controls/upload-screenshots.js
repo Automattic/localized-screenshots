@@ -4,86 +4,90 @@ import { svgToPNGBase64 } from '/lib/helpers';
 import { useEditorContext } from '/components/editor';
 
 export default function UploadScreenshots() {
-	const { lockedScreen, offset } = useCanvasContext();
+	const { offset } = useCanvasContext();
 	const { screenshots, setSelectedScreenshotIndex } = useScreenshotsContext();
 	const editorRef = useEditorContext();
 	const [ isLoading, setIsLoading ] = React.useState( false );
 
-	const getScreenshotWithAnnotationsBlob = useCallback( async () => {
-		editorRef.current.selectNone();
+	const getScreenshotWithAnnotationsBlob = useCallback(
+		async ( screenshotIndex ) => {
+			editorRef.current.selectNone();
 
-		const shapes = editorRef.current.getShapes();
-		const bounds = shapes.reduce( ( _bounds, shape ) => {
-			const { minX, minY, maxX, maxY } = editorRef.current.getShapeBounds(
-				shape.id
-			);
+			const shapes = editorRef.current.getShapes();
+			const bounds = shapes.reduce( ( _bounds, shape ) => {
+				const { minX, minY, maxX, maxY } =
+					editorRef.current.getShapeBounds( shape.id );
 
-			return {
-				minX:
-					_bounds.minX !== undefined
-						? Math.min( minX, _bounds.minX )
-						: minX,
-				minY:
-					_bounds.minY !== undefined
-						? Math.min( minY, _bounds.minY )
-						: minY,
-				maxX:
-					_bounds.maxX !== undefined
-						? Math.max( maxX, _bounds.maxX )
-						: maxX,
-				maxY:
-					_bounds.maxY !== undefined
-						? Math.max( maxY, _bounds.maxY )
-						: maxY,
-			};
-		}, {} );
+				return {
+					minX:
+						_bounds.minX !== undefined
+							? Math.min( minX, _bounds.minX )
+							: minX,
+					minY:
+						_bounds.minY !== undefined
+							? Math.min( minY, _bounds.minY )
+							: minY,
+					maxX:
+						_bounds.maxX !== undefined
+							? Math.max( maxX, _bounds.maxX )
+							: maxX,
+					maxY:
+						_bounds.maxY !== undefined
+							? Math.max( maxY, _bounds.maxY )
+							: maxY,
+				};
+			}, {} );
 
-		const canvas = document.createElement( 'canvas' );
-		const canvasContext = canvas.getContext( '2d' );
-		const screenshot = new Image();
-		screenshot.src = `data:image/jpeg;base64,${ lockedScreen.data }`;
-		screenshot.onload = () => {
-			canvas.width = screenshot.width - ( offset.left + offset.right );
-			canvas.height = screenshot.height - ( offset.top + offset.bottom );
-			canvasContext.drawImage(
-				screenshot,
-				0 - offset.left,
-				0 - offset.top,
-				screenshot.width,
-				screenshot.height
-			);
-		};
-
-		return editorRef.current
-			.getSvg()
-			.then( ( svg ) => {
-				// Remove SVG background style.
-				svg.style = '';
-
-				return svgToPNGBase64(
-					svg?.outerHTML || '',
-					bounds.maxX - bounds.minX,
-					bounds.maxY - bounds.minY
+			const canvas = document.createElement( 'canvas' );
+			const canvasContext = canvas.getContext( '2d' );
+			const screenshot = new Image();
+			screenshot.src = `data:image/jpeg;base64,${ screenshots[ screenshotIndex ].data }`;
+			screenshot.onload = () => {
+				canvas.width =
+					screenshot.width - ( offset.left + offset.right );
+				canvas.height =
+					screenshot.height - ( offset.top + offset.bottom );
+				canvasContext.drawImage(
+					screenshot,
+					0 - offset.left,
+					0 - offset.top,
+					screenshot.width,
+					screenshot.height
 				);
-			} )
-			.then( ( annotationsImageData ) => {
-				return new Promise( ( resolve ) => {
-					const annotations = new Image();
-					annotations.src = annotationsImageData;
-					annotations.onload = () => {
-						canvasContext.drawImage(
-							annotations,
-							bounds.minX - offset.left,
-							bounds.minY - offset.top,
-							annotations.width,
-							annotations.height
-						);
+			};
 
-						canvas.toBlob( resolve );
-					};
+			return editorRef.current
+				.getSvg()
+				.then( ( svg ) => {
+					// Remove SVG background style.
+					svg.style = '';
+
+					return svgToPNGBase64(
+						svg?.outerHTML || '',
+						bounds.maxX - bounds.minX,
+						bounds.maxY - bounds.minY
+					);
+				} )
+				.then( ( annotationsImageData ) => {
+					return new Promise( ( resolve ) => {
+						const annotations = new Image();
+						annotations.src = annotationsImageData;
+						annotations.onload = () => {
+							canvasContext.drawImage(
+								annotations,
+								bounds.minX - offset.left,
+								bounds.minY - offset.top,
+								annotations.width,
+								annotations.height
+							);
+
+							canvas.toBlob( resolve );
+						};
+					} );
 				} );
-			} );
-	}, [ editorRef.current, offset ] );
+		},
+		[ editorRef.current, screenshots, offset ]
+	);
 
 	const uploadScreenshots = useCallback( async () => {
 		setIsLoading( true );
@@ -93,7 +97,9 @@ export default function UploadScreenshots() {
 		for ( const [ index, screenshot ] of screenshots.entries() ) {
 			setSelectedScreenshotIndex( index );
 
-			const screenshotBlob = await getScreenshotWithAnnotationsBlob();
+			const screenshotBlob = await getScreenshotWithAnnotationsBlob(
+				index
+			);
 
 			const { locale } = screenshot.meta;
 			const formData = new FormData();
