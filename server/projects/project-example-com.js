@@ -1,13 +1,18 @@
 const Project = require( './project' );
 
 class ProjectExmpleCom extends Project {
-	config = {
+	defaultConfig = {
 		url: 'https://example.com',
 		width: 1280,
 		height: 720,
 		quality: 50,
 		fps: 30,
 	};
+
+	constructor( socket, config = {} ) {
+		super( socket, config );
+		this.config = { ...this.defaultConfig, ...config };
+	}
 
 	async generateLocalizedScreenshot() {
 		return await this.page.screenshot();

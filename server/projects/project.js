@@ -5,7 +5,7 @@ class Project {
 	socket = null;
 	browser = null;
 	page = null;
-	config = {
+	defaultConfig = {
 		url: 'about:blank',
 		width: 1280,
 		height: 720,
@@ -15,7 +15,7 @@ class Project {
 
 	constructor( socket, config = {} ) {
 		this.socket = socket;
-		this.config = { ...this.config, ...config };
+		this.config = { ...this.defaultConfig, ...config };
 
 		this.init();
 	}
@@ -38,8 +38,8 @@ class Project {
 		this.page = await this.browser.newPage();
 
 		await this.page.setViewportSize( {
-			width: 1280,
-			height: 720,
+			width: this.config.width,
+			height: this.config.height,
 		} );
 	}
 

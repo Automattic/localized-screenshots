@@ -1,13 +1,18 @@
 const Project = require( './project' );
 
 class ProjectWordPressCom extends Project {
-	config = {
+	defaultConfig = {
 		url: 'https://wordpress.com',
 		width: 1280,
 		height: 720,
 		quality: 50,
 		fps: 30,
 	};
+
+	constructor( socket, config = {} ) {
+		super( socket, config );
+		this.config = { ...this.defaultConfig, ...config };
+	}
 
 	async loadInitialPage() {
 		await this.login();
@@ -25,7 +30,7 @@ class ProjectWordPressCom extends Project {
 	async changeLocale( locale ) {
 		await this.page.click( '.masterbar__item.masterbar__item-me' );
 		await this.page.click( '.sidebar__menu li:nth-child(2) a' );
-		await this.page.click( '.language-picker' );
+		await this.page.click( '.language-picker:not(.is-loading)' );
 		await this.page.fill(
 			'.language-picker-component__search-desktop .search-component__input',
 			locale

@@ -2,7 +2,7 @@ import React from 'react';
 import wsClient from '/web-sockets';
 import throttle from 'lodash.throttle';
 
-export default function Frame() {
+export default function Frame( { width = 1280, height = 720 } ) {
 	const frame = React.useRef( null );
 
 	React.useEffect( () => {
@@ -62,7 +62,7 @@ export default function Frame() {
 
 	return (
 		<div style={ { textAlign: 'center' } }>
-			<canvas ref={ frame } width="1280" height="720"></canvas>
+			<canvas ref={ frame } width={ width } height={ height }></canvas>
 		</div>
 	);
 }

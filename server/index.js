@@ -1,6 +1,6 @@
 const { Server } = require( 'socket.io' );
-// const ProjectWordPressCom = require( './projects/project-wordpress-com' );
-const ProjectWordPressCom = require( './projects/project-example-com' );
+const ProjectExampleCom = require( './projects/project-example-com' );
+const ProjectWordPressCom = require( './projects/project-wordpress-com' );
 
 // Load environment variables.
 require( 'dotenv' ).config();
@@ -12,7 +12,27 @@ const io = new Server( 3004, {
 	},
 } );
 
+// Projects ids mapping.
+const projectsMap = {
+	example: ProjectExampleCom,
+	wpcom: ProjectWordPressCom,
+};
+
 // Handle WebSockets connections.
 io.on( 'connection', ( socket ) => {
-	new ProjectWordPressCom( socket );
+	socket.on( 'session:start', ( { project, width, height } = {} ) => {
+		const config = {};
+
+		if ( Number.isInteger( width ) ) {
+			config.width = width;
+		}
+
+		if ( Number.isInteger( height ) ) {
+			config.height = height;
+		}
+
+		const Project = projectsMap[ project ];
+
+		new Project( socket, config );
+	} );
 } );

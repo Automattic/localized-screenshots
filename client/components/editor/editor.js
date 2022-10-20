@@ -90,7 +90,7 @@ function EditorHandles() {
 }
 
 export default function Editor() {
-	const { lockedScreen, setAnnotations } = useCanvasContext();
+	const { lockedScreen, setAnnotations, size } = useCanvasContext();
 	const { selectedScreenshot, setScreenshots, selectedScreenshotIndex } =
 		useScreenshotsContext();
 	const editorRef = useEditorContext();
@@ -99,6 +99,10 @@ export default function Editor() {
 		return null;
 	}
 
+	const style = {
+		width: `${ size.width }px`,
+		height: `${ size.height }px`,
+	};
 	const imageSrc = selectedScreenshot?.data || lockedScreen?.data;
 
 	const handleEditorChange = ( editor, event ) => {
@@ -129,7 +133,7 @@ export default function Editor() {
 	};
 
 	return (
-		<div className="editor">
+		<div className="editor" style={ style }>
 			<div className="editor__inner">
 				<img src={ `data:image/jpeg;base64,${ imageSrc }` } />
 
