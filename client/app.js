@@ -1,23 +1,19 @@
 import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import Controls from '/components/controls';
-import Editor, { EditorProvider } from '/components/editor';
-import Frame from '/components/frame';
-import Screenshots from '/components/screenshots';
-import { useCanvasContext } from '/state';
+import PageHome from '/pages/home';
+import PageCreate from '/pages/create';
 
 export default function App() {
-	const { lockedScreen } = useCanvasContext();
-
 	return (
-		<EditorProvider>
-			<Controls screenshot={ lockedScreen } />
-
-			<Screenshots />
-
-			<Editor />
-
-			{ ! lockedScreen && <Frame /> }
-		</EditorProvider>
+		<BrowserRouter>
+			<Routes>
+				<Route path="/" element={ <PageHome /> } />
+				<Route
+					path="/create/:project/:resolution"
+					element={ <PageCreate /> }
+				/>
+			</Routes>
+		</BrowserRouter>
 	);
 }
