@@ -58,11 +58,26 @@ export default function Frame( { width = 1280, height = 720 } ) {
 				} );
 			} );
 		}
+
+		for ( const type of [ 'keydown', 'keypress', 'keyup' ] ) {
+			frame.current.addEventListener( type, ( event ) => {
+				event.preventDefault();
+				wsClient.emit( 'client:keyboard', {
+					type: type.replace( 'key', '' ),
+					key: event.key,
+				} );
+			} );
+		}
 	}, [ frame ] );
 
 	return (
 		<div style={ { textAlign: 'center' } }>
-			<canvas ref={ frame } width={ width } height={ height }></canvas>
+			<canvas
+				ref={ frame }
+				width={ width }
+				height={ height }
+				tabIndex="0"
+			></canvas>
 		</div>
 	);
 }

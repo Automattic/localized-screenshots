@@ -80,8 +80,10 @@ class Project {
 		}
 	};
 
-	handleUserKeyboardInput = async () => {
-		// @todo
+	handleUserKeyboardInput = async ( { type, key } ) => {
+		if ( [ 'down', 'press', 'up' ].includes( type ) ) {
+			await this.page.keyboard[ type ]( key );
+		}
 	};
 
 	bindRequestHandlers() {
