@@ -136,7 +136,9 @@ export default function UploadScreenshots() {
 
 	return (
 		<>
-			<button onClick={ uploadScreenshots }>Upload Screenshot</button>
+			<button className="button" onClick={ uploadScreenshots }>
+				Upload Screenshot
+			</button>
 			{ isLoading && 'Uploading...' }
 		</>
 	);

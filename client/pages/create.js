@@ -35,14 +35,22 @@ function SessionController() {
 
 export default function PageCreate() {
 	const { lockedScreen, size } = useCanvasContext();
+	const [ navHidden, setNavHidden ] = React.useState( false );
 
 	return (
 		<EditorProvider>
 			<SessionController />
 
-			<Controls screenshot={ lockedScreen } />
+			<div className={ `nav ${ navHidden ? 'is-hidden' : '' }` }>
+				<button
+					className="nav__toggle"
+					onClick={ () => setNavHidden( ! navHidden ) }
+				/>
 
-			<Screenshots />
+				<Controls screenshot={ lockedScreen } />
+
+				<Screenshots />
+			</div>
 
 			<Editor />
 

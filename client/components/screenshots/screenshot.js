@@ -11,9 +11,9 @@ export default function Screenshot( { screenshot, index } ) {
 	return (
 		<li>
 			<button
-				className={
+				className={ `button ${
 					index === selectedScreenshotIndex ? 'is-active' : ''
-				}
+				}` }
 				onClick={ () => {
 					setSelectedScreenshotIndex( index );
 					editorRef?.current.reset();

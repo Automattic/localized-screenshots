@@ -22,7 +22,7 @@ export default function PageHome() {
 		setResolution( event.target.value );
 
 	return (
-		<div>
+		<div class="init-panel">
 			<label htmlFor="project">Project: </label>
 			<select
 				id="project"
@@ -56,6 +56,7 @@ export default function PageHome() {
 
 			{ selectedProject && selectedResolution && (
 				<NavLink
+					className="button"
 					to={ `/create/${ selectedProject }/${ selectedResolution }` }
 				>
 					Start Session

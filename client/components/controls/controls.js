@@ -44,6 +44,7 @@ export default function Controls() {
 					<LockedScreenController />
 
 					<button
+						className="button"
 						onClick={ () =>
 							! isLoading && wsClient.emit( 'request:screenshot' )
 						}
@@ -64,17 +65,22 @@ export default function Controls() {
 						) ) }
 					</select>
 
-					<button onClick={ generateLocalizedScreenshots }>
+					<button
+						className="button"
+						onClick={ generateLocalizedScreenshots }
+					>
 						Get Localized Screenshots
 					</button>
 				</li>
 			) }
 
-			<li>
-				<UploadScreenshots />
-			</li>
+			{ isLoading && <li>Generating screenshots...</li> }
 
-			{ isLoading && 'Generating screenshots...' }
+			{ screenshots.length > 0 && (
+				<li>
+					<UploadScreenshots />
+				</li>
+			) }
 		</ul>
 	);
 }
