@@ -28,13 +28,11 @@ class ProjectWordPressCom extends Project {
 	}
 
 	async changeLocale( locale ) {
-		await this.page.click( '.masterbar__item.masterbar__item-me' );
-		await this.page.click( '.sidebar__menu li:nth-child(2) a' );
+		await this.page.goto( `${ this.config.url }/me/account` );
 		await this.page.click( '.language-picker:not(.is-loading)' );
-		await this.page.fill(
-			'.language-picker-component__search-desktop .search-component__input',
-			locale
-		);
+
+		await this.page.click( '.search-component__icon-navigation:visible' );
+		await this.page.fill( '.search-component__input:visible', locale );
 		await this.page.click(
 			`.language-picker-component__language-buttons [lang=${ locale }]`
 		);
