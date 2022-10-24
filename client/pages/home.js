@@ -22,7 +22,7 @@ export default function PageHome() {
 		setResolution( event.target.value );
 
 	return (
-		<div class="init-panel">
+		<div className="init-panel">
 			<label htmlFor="project">Project: </label>
 			<select
 				id="project"
