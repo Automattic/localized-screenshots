@@ -4,10 +4,12 @@
 	"description": "Screenshots Tool",
 	"main": "index.js",
 	"scripts": {
-		"dev": "run-p dev:serve dev:client dev:server",
+		"dev": "run-p dev:serve dev:client dev:server dev:plugin",
 		"dev:serve": "http-server public -p 3003 --proxy http://localhost:3003?",
 		"dev:client": "wp-scripts start client/index.js --config=client/webpack.config.js --output-path=public/client --webpack-no-externals",
-		"dev:server": "nodemon --watch server server"
+		"dev:server": "nodemon --watch server server",
+		"dev:plugin": "wp-env start && yarn run dev:plugin:rewrite",
+		"dev:plugin:rewrite": "wp-env run cli \"/bin/sh -c \\\"echo apache_modules: mod_rewrite > wp-cli.yml\\\"\" && wp-env run cli \"wp rewrite structure '/%postname%/' --hard\""
 	},
 	"repository": {
 		"type": "git",
@@ -21,6 +23,7 @@
 	"homepage": "https://github.com/yuliyan/localized-screenshots#readme",
 	"devDependencies": {
 		"@tldraw/tldraw": "^1.6.1",
+		"@wordpress/env": "^5.5.0",
 		"@wordpress/prettier-config": "^1.1.1",
 		"@wordpress/scripts": "^23.2.0",
 		"dotenv": "^16.0.0",
