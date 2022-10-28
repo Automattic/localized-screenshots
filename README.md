@@ -13,7 +13,7 @@ Make sure you have [Node.js](https://nodejs.org/en/download/), [Yarn](https://ya
 -   Clone the project repository locally:
 
 ```bash
-git clone https://github.com/yuliyan/localized-screenshots.git`.
+git clone https://github.com/yuliyan/localized-screenshots.git
 ```
 
 -   Set the environment variables in `.env`:
