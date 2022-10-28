@@ -118,7 +118,7 @@ export default function UploadScreenshots() {
 
 			const screenshotId = await (
 				await fetch(
-					'http://localhost:8888/wp-json/localized-screenshots/v1/upload',
+					`${ API_ROOT }/wp-json/localized-screenshots/v1/upload`,
 					{
 						method: 'POST',
 						body: formData,
