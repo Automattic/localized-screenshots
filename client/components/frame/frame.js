@@ -4,6 +4,7 @@ import throttle from 'lodash.throttle';
 
 export default function Frame( { width = 1280, height = 720 } ) {
 	const frame = React.useRef( null );
+	const [ cursor, setCursor ] = React.useState( null );
 
 	React.useEffect( () => {
 		if ( ! frame.current ) {
@@ -17,6 +18,9 @@ export default function Frame( { width = 1280, height = 720 } ) {
 		};
 		wsClient.on( 'page:frame', ( data ) => {
 			image.src = `data:image/jpeg;base64,${ data }`;
+		} );
+		wsClient.on( 'page:cursor', ( payload ) => {
+			setCursor( payload );
 		} );
 
 		frame.current.addEventListener(
@@ -77,6 +81,7 @@ export default function Frame( { width = 1280, height = 720 } ) {
 				width={ width }
 				height={ height }
 				tabIndex="0"
+				style={ { cursor } }
 			></canvas>
 		</div>
 	);

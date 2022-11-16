@@ -12,6 +12,7 @@ class Project {
 		quality: 50,
 		fps: 30,
 	};
+	cursor = null;
 
 	constructor( socket, config = {} ) {
 		this.socket = socket;
@@ -78,6 +79,8 @@ class Project {
 		} else {
 			await this.page.mouse[ type ]();
 		}
+
+		await this.updateCursor( x, y );
 	};
 
 	handleUserKeyboardInput = async ( { type, key } ) => {
@@ -123,6 +126,45 @@ class Project {
 			this.socket.emit( 'page:localizedScreenshot', payload );
 		}
 	};
+
+	async updateCursor( x, y ) {
+		let cursor;
+
+		try {
+			cursor = await this.page.evaluate(
+				( [ x, y ] ) => {
+					const target = document.elementFromPoint( x, y );
+
+					return window.getComputedStyle( target )[ 'cursor' ];
+				},
+				[ x, y ]
+			);
+
+			// Detect whether the pointer is over a text node.
+			if ( cursor === 'auto' ) {
+				cursor = await this.page.evaluate(
+					( [ x, y ] ) => {
+						const range = document.caretRangeFromPoint( x, y );
+						range.selectNodeContents( range.startContainer );
+						const { left, top, width, height } =
+							range.getBoundingClientRect();
+						const isText =
+							left <= x &&
+							left + width >= x &&
+							top <= y &&
+							top + height >= y;
+						return isText ? 'text' : 'auto';
+					},
+					[ x, y ]
+				);
+			}
+		} catch {}
+
+		if ( this._cursor !== cursor ) {
+			this.socket.emit( 'page:cursor', cursor );
+			this._cursor = cursor;
+		}
+	}
 
 	async generateLocalizedScreenshot( { url, locale, scrollX, scrollY } ) {
 		// @implement
