@@ -24,7 +24,7 @@ export default function Screenshot( { screenshot, index } ) {
 					}
 				} }
 			>
-				<img src={ `data:image/jpeg;base64,${ data }` } />
+				<img src={ data } />
 				<span>{ meta.locale }</span>
 			</button>
 		</li>

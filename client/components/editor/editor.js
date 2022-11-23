@@ -135,7 +135,7 @@ export default function Editor() {
 	return (
 		<div className="editor" style={ style }>
 			<div className="editor__inner">
-				<img src={ `data:image/jpeg;base64,${ imageSrc }` } />
+				<img src={ imageSrc } />
 
 				<EditorHandles />
 			</div>

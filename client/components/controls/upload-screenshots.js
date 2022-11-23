@@ -41,24 +41,31 @@ export default function UploadScreenshots() {
 			const canvas = document.createElement( 'canvas' );
 			const canvasContext = canvas.getContext( '2d' );
 			const screenshot = new Image();
-			screenshot.src = `data:image/jpeg;base64,${ screenshots[ screenshotIndex ].data }`;
-			screenshot.onload = () => {
-				canvas.width =
-					screenshot.width - ( offset.left + offset.right );
-				canvas.height =
-					screenshot.height - ( offset.top + offset.bottom );
-				canvasContext.drawImage(
-					screenshot,
-					0 - offset.left,
-					0 - offset.top,
-					screenshot.width,
-					screenshot.height
-				);
-			};
+
+			await new Promise( ( resolve ) => {
+				screenshot.src = screenshots[ screenshotIndex ].data;
+				screenshot.onload = () => {
+					canvas.width =
+						screenshot.width - ( offset.left + offset.right );
+					canvas.height =
+						screenshot.height - ( offset.top + offset.bottom );
+					canvasContext.drawImage(
+						screenshot,
+						0 - offset.left,
+						0 - offset.top,
+						screenshot.width,
+						screenshot.height
+					);
+					resolve();
+				};
+			} );
 
 			return editorRef.current
 				.getSvg()
 				.then( ( svg ) => {
+					if ( ! svg ) {
+						return null;
+					}
 					// Remove SVG background style.
 					svg.style = '';
 
@@ -69,6 +76,10 @@ export default function UploadScreenshots() {
 					);
 				} )
 				.then( ( annotationsImageData ) => {
+					if ( ! annotationsImageData ) {
+						return Promise.resolve();
+					}
+
 					return new Promise( ( resolve ) => {
 						const annotations = new Image();
 						annotations.src = annotationsImageData;
@@ -81,9 +92,14 @@ export default function UploadScreenshots() {
 								annotations.height
 							);
 
-							canvas.toBlob( resolve );
+							resolve();
 						};
 					} );
+				} )
+				.then( () => {
+					return new Promise( ( resolve ) =>
+						canvas.toBlob( resolve )
+					);
 				} );
 		},
 		[ editorRef.current, screenshots, offset ]
@@ -92,33 +108,49 @@ export default function UploadScreenshots() {
 	const uploadScreenshots = useCallback( async () => {
 		setIsLoading( true );
 
-		let parentScreenshot = null;
+		let parentScreenshot = screenshots.find(
+			( screenshot ) => screenshot.meta.locale === 'en'
+		)?.id;
 
 		for ( const [ index, screenshot ] of screenshots.entries() ) {
 			setSelectedScreenshotIndex( index );
+
+			if ( screenshot.id && ! screenshot.isUpdated ) {
+				continue;
+			}
 
 			const screenshotBlob = await getScreenshotWithAnnotationsBlob(
 				index
 			);
 
-			const { locale } = screenshot.meta;
+			const { locale, page } = screenshot.meta;
 			const formData = new FormData();
 			formData.append(
 				'screenshot',
 				new File( [ screenshotBlob ], `screenshot_${ locale }.png` )
 			);
 			formData.append( 'screenshot_locale', locale );
-			formData.append( 'screenshot_meta', {
-				annotations: screenshot.annotations,
-			} );
+			formData.append(
+				'screenshot_meta',
+				JSON.stringify( {
+					annotations: screenshot.annotations,
+					offset,
+					page,
+				} )
+			);
+
+			if ( screenshot.id ) {
+				formData.append( 'screenshot_id', screenshot.id );
+			}
 
 			if ( locale !== 'en' && parentScreenshot ) {
 				formData.append( 'screenshot_parent', parentScreenshot );
 			}
 
+			const endpoint = screenshot.id ? 'update' : 'upload';
 			const screenshotId = await (
 				await fetch(
-					`${ API_ROOT }/wp-json/localized-screenshots/v1/upload`,
+					`${ API_ROOT }/wp-json/localized-screenshots/v1/${ endpoint }/`,
 					{
 						method: 'POST',
 						body: formData,

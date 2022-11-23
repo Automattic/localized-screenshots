@@ -74,3 +74,24 @@ export function realignShapesForRTL( shapes, editor ) {
 		return shape;
 	} );
 }
+
+export function imageToDataURL( src ) {
+	return new Promise( ( resolve ) => {
+		const image = new Image();
+
+		image.crossOrigin = 'Anonymous';
+		image.onload = () => {
+			const canvas = document.createElement( 'canvas' );
+			const context = canvas.getContext( '2d' );
+
+			canvas.height = image.naturalHeight;
+			canvas.width = image.naturalWidth;
+			context.drawImage( image, 0, 0 );
+
+			const dataURL = canvas.toDataURL();
+
+			resolve( dataURL );
+		};
+		image.src = src;
+	} );
+}

@@ -21,20 +21,24 @@ export default function Controls() {
 				locales.push( option.value );
 			}
 		}
-		const { meta } = lockedScreen;
+		const { page } = lockedScreen;
 
-		wsClient.emit( 'request:localizedScreenshots', { locales, meta } );
+		wsClient.emit( 'request:localizedScreenshots', { locales, page } );
 		setIsLoading( true );
 
 		const screenshotsInQueue = new Set( locales );
-		wsClient.on( 'page:localizedScreenshot', ( { meta } ) => {
+		const screenshotQueueHandler = ( { meta } ) => {
 			screenshotsInQueue.delete( meta.locale );
 
 			if ( screenshotsInQueue.size === 0 ) {
-				wsClient.off( 'page:localizedScreenshot' );
+				wsClient.off(
+					'page:localizedScreenshot',
+					screenshotQueueHandler
+				);
 				setIsLoading( false );
 			}
-		} );
+		};
+		wsClient.on( 'page:localizedScreenshot', screenshotQueueHandler );
 	};
 
 	return (
@@ -55,7 +59,7 @@ export default function Controls() {
 				</li>
 			) }
 
-			{ lockedScreen && ! screenshots.length && (
+			{ lockedScreen && (
 				<li>
 					<select id="locales" multiple>
 						{ languages.map( ( { slug, name } ) => (
@@ -69,7 +73,7 @@ export default function Controls() {
 						className="button"
 						onClick={ generateLocalizedScreenshots }
 					>
-						Get Localized Screenshots
+						Generate Localized Screenshots
 					</button>
 				</li>
 			) }

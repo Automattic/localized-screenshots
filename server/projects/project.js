@@ -97,30 +97,38 @@ class Project {
 		);
 	}
 
-	handleScreenshotRequest = async () => {
-		const screenshot = await this.page.screenshot();
-		const meta = {
+	getPageData = async () => {
+		return {
 			url: await this.page.url(),
 			scrollX: await this.page.evaluate( () => window.scrollX ),
 			scrollY: await this.page.evaluate( () => window.scrollY ),
 		};
+	};
+
+	handleScreenshotRequest = async () => {
+		const screenshot = await this.page.screenshot();
+		const page = await this.getPageData();
 		const payload = {
-			data: screenshot.toString( 'base64' ),
-			meta,
+			data: `data:image/png;base64,${ screenshot.toString( 'base64' ) }`,
+			page,
 		};
 		this.socket.emit( 'page:screenshot', payload );
 	};
 
-	handleLocalizedScreenshotRequest = async ( { locales, meta } ) => {
+	handleLocalizedScreenshotRequest = async ( { locales, page } ) => {
 		for ( const locale of locales ) {
 			const screenshot = await this.generateLocalizedScreenshot( {
-				...meta,
+				...page,
 				locale,
 			} );
+			const pageData = await this.getPageData();
 			const payload = {
-				data: screenshot.toString( 'base64' ),
+				data: `data:image/png;base64,${ screenshot.toString(
+					'base64'
+				) }`,
 				meta: {
 					locale,
+					page: pageData,
 				},
 			};
 			this.socket.emit( 'page:localizedScreenshot', payload );

@@ -5,16 +5,42 @@ class Localized_Screenshots {
 
 	public static function init() {
 		add_action( 'init', array( self::class, 'register_screenshot_route' ) );
-		add_action( 'rest_api_init', array( self::class, 'register_upload_endpoint' ) );
+		add_action( 'rest_api_init', array( self::class, 'register_get_screenshots_endpoint' ) );
+		add_action( 'rest_api_init', array( self::class, 'register_upload_screenshot_endpoint' ) );
+		add_action( 'rest_api_init', array( self::class, 'register_update_screenshot_endpoint' ) );
 	}
 
-	public static function register_upload_endpoint() {
+	public static function register_get_screenshots_endpoint() {
+		register_rest_route(
+			self::$base,
+			'get',
+			array(
+				'methods' => array( 'GET' ),
+				'callback' => array( self::class, 'handle_get_screenshots' ),
+				'permission_callback' => array( self::class, 'is_authorized' ),
+			)
+		);
+	}
+
+	public static function register_upload_screenshot_endpoint() {
 		register_rest_route(
 			self::$base,
 			'upload',
 			array(
 				'methods' => array( 'POST' ),
-				'callback' => array( self::class, 'handle_upload' ),
+				'callback' => array( self::class, 'handle_upload_screenshot' ),
+				'permission_callback' => array( self::class, 'is_authorized' ),
+			)
+		);
+	}
+
+	public static function register_update_screenshot_endpoint() {
+		register_rest_route(
+			self::$base,
+			'update',
+			array(
+				'methods' => array( 'POST' ),
+				'callback' => array( self::class, 'handle_update_screenshots' ),
 				'permission_callback' => array( self::class, 'is_authorized' ),
 			)
 		);
@@ -56,6 +82,8 @@ class Localized_Screenshots {
 			$screenshot_id = empty( $localized_screenshot ) ? null : $localized_screenshot[0]->ID;
 		}
 
+		header( 'Access-Control-Allow-Origin: *' );
+
 		wp_safe_redirect( wp_get_attachment_image_url( $screenshot_id, 'full' ) );
 	}
 
@@ -64,7 +92,33 @@ class Localized_Screenshots {
 		return true;
 	}
 
-	public static function handle_upload( WP_REST_Request $request ) {
+	public static function handle_get_screenshots( WP_REST_Request $request ) {
+		$requested_screenshot = get_post( $request->get_param( 'id' ) );
+		$screenshot_parent = $requested_screenshot->post_parent ? get_post( $requested_screenshot->post_parent ) : $requested_screenshot;
+		$localized_screenshots = get_posts(
+			array(
+				'post_type'      => 'attachment',
+				'post_parent'    => $screenshot_parent->ID,
+				'posts_per_page' => -1,
+			)
+		);
+		$all_screenshots = array_merge( array( $screenshot_parent ), $localized_screenshots );
+		$response = array_map(
+			function( $screenshot ) {
+				return array(
+					'id'     => $screenshot->ID,
+					'url'    => get_home_url() . "/screenshot/$screenshot->ID/",
+					'locale' => get_post_meta( $screenshot->ID, 'screenshot_locale', true ),
+					'meta'   => get_post_meta( $screenshot->ID, 'screenshot_meta', true ),
+				);
+			},
+			$all_screenshots
+		);
+
+		return $response;
+	}
+
+	public static function handle_upload_screenshot( WP_REST_Request $request ) {
 		if ( ! function_exists( 'media_handle_upload' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/image.php';
 			require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -82,5 +136,26 @@ class Localized_Screenshots {
 		add_post_meta( $attachment, 'screenshot_locale', $screenshot_locale );
 
 		return $attachment;
+	}
+
+	public static function handle_update_screenshots( WP_REST_Request $request ) {
+		if ( ! function_exists( 'wp_handle_upload' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+		}
+
+
+		header( 'Access-Control-Allow-Origin: *' );
+
+		$screenshot_id = $request->get_param( 'screenshot_id' );
+		$screenshot_meta = json_decode( $request->get_param( 'screenshot_meta' ), true );
+
+		$file = wp_handle_upload( $_FILES['screenshot'], array( 'test_form' => false ) );
+		$updated = update_attached_file( $screenshot_id, $file['file'] );
+
+		if ( $updated ) {
+			update_post_meta( $screenshot_id, 'screenshot_meta', $screenshot_meta );
+		}
+
+		return $updated;
 	}
 }

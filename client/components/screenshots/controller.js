@@ -15,14 +15,37 @@ export default function ScreenshotsController() {
 			payload.annotations = annotations;
 
 			// Re-align annotations for RTL locales.
-			if ( getLanguageBySlug( payload?.meta?.locale )?.rtl ) {
+			if (
+				payload.annotations &&
+				getLanguageBySlug( payload?.meta?.locale )?.rtl
+			) {
 				payload.annotations = realignShapesForRTL(
 					payload.annotations,
 					editorRef.current
 				);
 			}
 
-			setScreenshots( ( screenshots ) => screenshots.concat( payload ) );
+			setScreenshots( ( screenshots ) => {
+				const screenshotForLocaleIndex = screenshots.findIndex(
+					( screenshot ) =>
+						screenshot.meta.locale === payload.meta.locale
+				);
+
+				// Update existing screenshot entry for locale.
+				if ( screenshotForLocaleIndex >= 0 ) {
+					const updatedScreenshots = [ ...screenshots ];
+
+					updatedScreenshots[ screenshotForLocaleIndex ] = {
+						...updatedScreenshots[ screenshotForLocaleIndex ],
+						data: payload.data,
+						isUpdated: true,
+					};
+
+					return updatedScreenshots;
+				}
+
+				return screenshots.concat( payload );
+			} );
 		},
 		[ setScreenshots, annotations ]
 	);
