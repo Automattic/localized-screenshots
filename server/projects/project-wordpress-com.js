@@ -45,6 +45,7 @@ class ProjectWordPressCom extends Project {
 	async generateLocalizedScreenshot( { url, locale, scrollX, scrollY } ) {
 		await this.changeLocale( locale );
 		await this.page.goto( url, { waitUntil: 'networkidle' } );
+		await this.page.waitForNavigation( { waitUntil: 'networkidle' } );
 		await this.page.evaluate(
 			( scroll ) => window.scrollTo( scroll.scrollX, scroll.scrollY ),
 			{ scrollX, scrollY }
