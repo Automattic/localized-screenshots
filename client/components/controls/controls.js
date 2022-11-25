@@ -9,37 +9,57 @@ export default function Controls() {
 	const { lockedScreen } = useCanvasContext();
 	const { screenshots } = useScreenshotsContext();
 	const [ isLoading, setIsLoading ] = React.useState( false );
+	const [ screenshotsQueue, setScreenshotsQueue ] = React.useState( {} );
+	const [ locales, setLocales ] = React.useState( [] );
+	const handleLocalesChange = ( event ) => {
+		const selected = [ ...event.target.options ]
+			.filter( ( option ) => option.selected )
+			.map( ( option ) => option.value );
+		setLocales( selected );
+	};
 	const generateLocalizedScreenshots = () => {
 		if ( isLoading ) {
 			return;
 		}
 
-		const locales = [];
-		// @todo use state.
-		for ( const option of document.querySelector( '#locales' ).options ) {
-			if ( option.selected ) {
-				locales.push( option.value );
-			}
-		}
 		const { page } = lockedScreen;
 
 		wsClient.emit( 'request:localizedScreenshots', { locales, page } );
+		setScreenshotsQueue(
+			locales.reduce( ( queue, locale ) => {
+				queue[ locale ] = {};
+				return queue;
+			}, {} )
+		);
 		setIsLoading( true );
 
-		const screenshotsInQueue = new Set( locales );
 		const screenshotQueueHandler = ( { meta } ) => {
-			screenshotsInQueue.delete( meta.locale );
+			setScreenshotsQueue( ( queue ) => {
+				const updatedQueue = {
+					...queue,
+					[ meta.locale ]: { isReady: true },
+				};
+				const remainingScreenshots = Object.values(
+					updatedQueue
+				).filter( ( locale ) => ! locale.isReady );
 
-			if ( screenshotsInQueue.size === 0 ) {
-				wsClient.off(
-					'page:localizedScreenshot',
-					screenshotQueueHandler
-				);
-				setIsLoading( false );
-			}
+				if ( remainingScreenshots.length === 0 ) {
+					wsClient.off(
+						'page:localizedScreenshot',
+						screenshotQueueHandler
+					);
+					setIsLoading( false );
+				}
+
+				return updatedQueue;
+			} );
 		};
 		wsClient.on( 'page:localizedScreenshot', screenshotQueueHandler );
 	};
+	const totalQueueCount = Object.values( screenshotsQueue ).length;
+	const remainingQueueCount = Object.values( screenshotsQueue ).filter(
+		( screenshot ) => ! screenshot.isReady
+	).length;
 
 	return (
 		<ul className="controls">
@@ -61,9 +81,18 @@ export default function Controls() {
 
 			{ lockedScreen && (
 				<li>
-					<select id="locales" multiple>
+					<select
+						id="locales"
+						onChange={ handleLocalesChange }
+						value={ locales }
+						multiple
+					>
 						{ languages.map( ( { slug, name } ) => (
 							<option key={ slug } value={ slug }>
+								{ !! screenshots.find(
+									( screenshot ) =>
+										screenshot?.meta?.locale === slug
+								) && '[Update]' }{ ' ' }
 								{ name }
 							</option>
 						) ) }
@@ -72,15 +101,24 @@ export default function Controls() {
 					<button
 						className="button"
 						onClick={ generateLocalizedScreenshots }
+						disabled={ isLoading }
 					>
 						Generate Localized Screenshots
 					</button>
 				</li>
 			) }
 
-			{ isLoading && <li>Generating screenshots...</li> }
+			{ isLoading && (
+				<li>
+					<p>Generating screenshots...</p>
+					<p>
+						( { totalQueueCount - remainingQueueCount } /{ ' ' }
+						{ totalQueueCount } )
+					</p>
+				</li>
+			) }
 
-			{ screenshots.length > 0 && (
+			{ screenshots.length > 0 && ! isLoading && (
 				<li>
 					<UploadScreenshots />
 				</li>

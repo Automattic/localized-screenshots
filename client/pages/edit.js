@@ -1,9 +1,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
-import Controls from '/components/controls';
+import Nav from '/components/nav';
 import Editor, { EditorProvider } from '/components/editor';
-import Screenshots from '/components/screenshots';
 import { useScreenshotsContext, useCanvasContext } from '/state';
 import { imageToDataURL } from '/lib/helpers';
 import wsClient from '/web-sockets';
@@ -83,10 +82,7 @@ export default function PageEdit() {
 
 			<ScreenshotsRequestController />
 
-			<div className="nav">
-				<Controls />
-				<Screenshots />
-			</div>
+			<Nav />
 
 			<Editor />
 		</EditorProvider>
