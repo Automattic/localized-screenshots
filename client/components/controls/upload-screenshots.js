@@ -126,9 +126,21 @@ export default function UploadScreenshots() {
 				index
 			);
 
-			let [ width, height ] = resolution.split( 'x' );
-			width = parseInt( width ) || null;
-			height = parseInt( height ) || null;
+			let screenshotMetaProject = {
+				...screenshot.meta.project,
+			};
+			if ( project && resolution ) {
+				let [ width, height ] = resolution.split( 'x' );
+				width = parseInt( width ) || null;
+				height = parseInt( height ) || null;
+
+				screenshotMetaProject = {
+					project,
+					width,
+					height,
+				};
+			}
+
 			const { locale, page } = screenshot.meta;
 			const formData = new FormData();
 			formData.append(
@@ -142,11 +154,7 @@ export default function UploadScreenshots() {
 					annotations: screenshot.annotations,
 					offset,
 					page,
-					project: {
-						project,
-						width,
-						height,
-					},
+					project: screenshotMetaProject,
 				} )
 			);
 
