@@ -3,11 +3,22 @@ import { useParams } from 'react-router-dom';
 
 import Controls from '/components/controls';
 import Editor, { EditorProvider } from '/components/editor';
-// import Frame from '/components/frame';
 import Screenshots from '/components/screenshots';
 import { useScreenshotsContext, useCanvasContext } from '/state';
 import { imageToDataURL } from '/lib/helpers';
 import wsClient from '/web-sockets';
+
+function SessionController( { project, width, height } ) {
+	React.useEffect( () => {
+		wsClient.emit( 'session:start', {
+			project,
+			width,
+			height,
+		} );
+	}, [] );
+
+	return null;
+}
 
 function ScreenshotsRequestController() {
 	const { screenshotId } = useParams();
@@ -52,22 +63,19 @@ function ScreenshotsRequestController() {
 					setSelectedScreenshotIndex( 0 );
 				} );
 			} );
-
-		setTimeout( () => {
-			wsClient.emit( 'session:start', {
-				project: 'example',
-				width: 1024,
-				height: 768,
-			} );
-		}, 500 );
 	}, [ screenshotId ] );
 
 	return null;
 }
 
 export default function PageEdit() {
+	const { selectedScreenshot } = useScreenshotsContext();
+	const projectProps = selectedScreenshot?.meta?.project;
+
 	return (
 		<EditorProvider>
+			{ projectProps && <SessionController { ...projectProps } /> }
+
 			<ScreenshotsRequestController />
 
 			<div className="nav">

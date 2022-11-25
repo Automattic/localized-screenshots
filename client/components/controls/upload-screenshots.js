@@ -1,4 +1,6 @@
 import React, { useCallback } from 'react';
+import { useParams } from 'react-router-dom';
+
 import { useCanvasContext, useScreenshotsContext } from '/state';
 import { svgToPNGBase64 } from '/lib/helpers';
 import { useEditorContext } from '/components/editor';
@@ -7,6 +9,7 @@ export default function UploadScreenshots() {
 	const { offset } = useCanvasContext();
 	const { screenshots, setSelectedScreenshotIndex } = useScreenshotsContext();
 	const editorRef = useEditorContext();
+	const { project, resolution } = useParams();
 	const [ isLoading, setIsLoading ] = React.useState( false );
 
 	const getScreenshotWithAnnotationsBlob = useCallback(
@@ -123,6 +126,9 @@ export default function UploadScreenshots() {
 				index
 			);
 
+			let [ width, height ] = resolution.split( 'x' );
+			width = parseInt( width ) || null;
+			height = parseInt( height ) || null;
 			const { locale, page } = screenshot.meta;
 			const formData = new FormData();
 			formData.append(
@@ -136,6 +142,11 @@ export default function UploadScreenshots() {
 					annotations: screenshot.annotations,
 					offset,
 					page,
+					project: {
+						project,
+						width,
+						height,
+					},
 				} )
 			);
 
