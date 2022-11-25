@@ -45,9 +45,15 @@ body {
 		}
 	}
 
-	&__annotations > div {
-		left: 0;
-		top: 0;
+	&__annotations {
+		&.is-hidden {
+			display: none;
+		}
+
+		& > div {
+			left: 0;
+			top: 0;
+		}
 	}
 
 	&__handles {

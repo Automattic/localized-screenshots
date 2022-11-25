@@ -99,6 +99,8 @@ export default function Editor() {
 		return null;
 	}
 
+	const isEditable =
+		! selectedScreenshot?.id || selectedScreenshot?.isUpdated;
 	const style = {
 		width: `${ size.width }px`,
 		height: `${ size.height }px`,
@@ -137,10 +139,14 @@ export default function Editor() {
 			<div className="editor__inner">
 				<img src={ imageSrc } />
 
-				<EditorHandles />
+				{ isEditable && <EditorHandles /> }
 			</div>
 
-			<div className="editor__annotations">
+			<div
+				className={ `editor__annotations ${
+					isEditable ? '' : 'is-hidden'
+				}` }
+			>
 				<Tldraw
 					showMenu={ false }
 					showPages={ false }

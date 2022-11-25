@@ -7,6 +7,15 @@ export default function Screenshot( { screenshot, index } ) {
 		useScreenshotsContext();
 	const { data, annotations, meta } = screenshot;
 	const editorRef = useEditorContext();
+	const screenshotClickHandler = React.useCallback( () => {
+		setSelectedScreenshotIndex( index );
+		editorRef?.current?.reset();
+
+		if ( annotations ) {
+			editorRef?.current?.createShapes( ...annotations );
+			editorRef?.current?.select();
+		}
+	}, [ editorRef ] );
 
 	return (
 		<li>
@@ -16,11 +25,11 @@ export default function Screenshot( { screenshot, index } ) {
 				}` }
 				onClick={ () => {
 					setSelectedScreenshotIndex( index );
-					editorRef?.current.reset();
+					editorRef?.current?.reset();
 
 					if ( annotations ) {
-						editorRef?.current.createShapes( ...annotations );
-						editorRef?.current.select();
+						editorRef?.current?.createShapes( ...annotations );
+						editorRef?.current?.select();
 					}
 				} }
 			>
