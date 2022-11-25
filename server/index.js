@@ -33,6 +33,8 @@ io.on( 'connection', ( socket ) => {
 
 		const Project = projectsMap[ project ];
 
-		new Project( socket, config );
+		if ( Project ) {
+			new Project( socket, config );
+		}
 	} );
 } );

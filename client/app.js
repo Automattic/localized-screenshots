@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
+import ErrorHandler from '/components/error-handler';
 import PageHome from '/pages/home';
 import PageCreate from '/pages/create';
 import PageEdit from '/pages/edit';
@@ -16,6 +17,8 @@ export default function App() {
 				/>
 				<Route path="/edit/:screenshotId" element={ <PageEdit /> } />
 			</Routes>
+
+			<ErrorHandler />
 		</BrowserRouter>
 	);
 }
