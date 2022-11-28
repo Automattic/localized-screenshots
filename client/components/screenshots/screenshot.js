@@ -1,12 +1,11 @@
 import React from 'react';
+
 import { useScreenshotsContext } from '/state';
-import { useEditorContext } from '/components/editor';
 
 export default function Screenshot( { screenshot, index } ) {
 	const { selectedScreenshotIndex, setSelectedScreenshotIndex } =
 		useScreenshotsContext();
-	const { data, annotations, meta } = screenshot;
-	const editorRef = useEditorContext();
+	const { data, meta } = screenshot;
 	const willBeUploaded = ! screenshot.id || screenshot.isUpdated;
 
 	return (
@@ -17,12 +16,6 @@ export default function Screenshot( { screenshot, index } ) {
 				}` }
 				onClick={ () => {
 					setSelectedScreenshotIndex( index );
-					editorRef?.current?.reset();
-
-					if ( annotations ) {
-						editorRef?.current?.createShapes( ...annotations );
-						editorRef?.current?.select();
-					}
 				} }
 			>
 				<img src={ data } />

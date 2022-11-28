@@ -116,11 +116,16 @@ export default function UploadScreenshots() {
 		)?.id;
 
 		for ( const [ index, screenshot ] of screenshots.entries() ) {
-			setSelectedScreenshotIndex( index );
-
 			if ( screenshot.id && ! screenshot.isUpdated ) {
 				continue;
 			}
+
+			setSelectedScreenshotIndex( index );
+
+			// Wait for editor annotations to be updated.
+			await new Promise( ( resolve ) =>
+				window.requestAnimationFrame( resolve )
+			);
 
 			const screenshotBlob = await getScreenshotWithAnnotationsBlob(
 				index
@@ -190,7 +195,7 @@ export default function UploadScreenshots() {
 			<button className="button" onClick={ uploadScreenshots }>
 				Upload Screenshot
 			</button>
-			{ isLoading && 'Uploading...' }
+			{ isLoading && <p>Uploading...</p> }
 		</>
 	);
 }

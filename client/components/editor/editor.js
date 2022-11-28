@@ -95,6 +95,21 @@ export default function Editor() {
 		useScreenshotsContext();
 	const editorRef = useEditorContext();
 
+	React.useEffect( () => {
+		if ( ! selectedScreenshot ) {
+			return;
+		}
+
+		const { annotations } = selectedScreenshot;
+
+		editorRef?.current?.reset();
+
+		if ( annotations ) {
+			editorRef?.current?.createShapes( ...annotations );
+			editorRef?.current?.select();
+		}
+	}, [ selectedScreenshot ] );
+
 	if ( ! lockedScreen && ! selectedScreenshot ) {
 		return null;
 	}
@@ -116,6 +131,7 @@ export default function Editor() {
 				'session:complete:DrawSession',
 				'session:complete:EraseSession',
 				'updated_shapes',
+				'style',
 			].includes( event )
 		) {
 			const shapes = JSON.parse( JSON.stringify( editor.getShapes() ) );
