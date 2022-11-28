@@ -7,15 +7,7 @@ export default function Screenshot( { screenshot, index } ) {
 		useScreenshotsContext();
 	const { data, annotations, meta } = screenshot;
 	const editorRef = useEditorContext();
-	const screenshotClickHandler = React.useCallback( () => {
-		setSelectedScreenshotIndex( index );
-		editorRef?.current?.reset();
-
-		if ( annotations ) {
-			editorRef?.current?.createShapes( ...annotations );
-			editorRef?.current?.select();
-		}
-	}, [ editorRef ] );
+	const willBeUploaded = ! screenshot.id || screenshot.isUpdated;
 
 	return (
 		<li>
@@ -35,6 +27,8 @@ export default function Screenshot( { screenshot, index } ) {
 			>
 				<img src={ data } />
 				<span>{ meta.locale }</span>
+
+				{ willBeUploaded && <i /> }
 			</button>
 		</li>
 	);
