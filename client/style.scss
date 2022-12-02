@@ -355,3 +355,51 @@ body {
 	justify-content: center;
 	background-color: rgba(255, 255, 255, 0.8);
 }
+
+/* Recording Actions */
+.recoding-actions-indicator {
+	display: inline-block;
+	vertical-align: middle;
+	width: 0.75em;
+	height: 0.75em;
+	margin: -0.25em 0.25em 0;
+	background: #dc2323;
+	border: 1px solid #cb2626;
+	border-radius: 50%;
+}
+
+.list-actions {
+	margin: 0.5em 0 0;
+	padding: 0;
+	border: 1px solid #eee;
+	border-radius: 5px;
+	list-style: none outside none;
+
+	&__item {
+		display: flex;
+		flex-flow: row nowrap;
+		align-items: center;
+		padding: 0.25em !important;
+		border: 0 !important;
+
+		&-type {
+			padding: 0.25em;
+			border-radius: 3px;
+			background: #eee;
+			font-size: 0.8em;
+			font-weight: bold;
+		}
+
+		&-selector {
+			flex: 1 1 auto;
+			padding: 0 0.25em;
+			font-size: 0.8em;
+			text-align: left;
+		}
+
+		button {
+			padding: 0 0.25em;
+			color: #dc2323;
+		}
+	}
+}

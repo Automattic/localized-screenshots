@@ -42,7 +42,13 @@ class ProjectWordPressCom extends Project {
 		await this.page.waitForSelector( '.language-picker:not(:disabled)' );
 	}
 
-	async generateLocalizedScreenshot( { url, locale, scrollX, scrollY } ) {
+	async generateLocalizedScreenshot( {
+		url,
+		locale,
+		scrollX,
+		scrollY,
+		actions,
+	} ) {
 		await this.changeLocale( locale );
 		await this.page.goto( url, { waitUntil: 'networkidle' } );
 		await this.page.waitForNavigation( { waitUntil: 'networkidle' } );
@@ -50,6 +56,7 @@ class ProjectWordPressCom extends Project {
 			( scroll ) => window.scrollTo( scroll.scrollX, scroll.scrollY ),
 			{ scrollX, scrollY }
 		);
+		await this.doPageActions( actions );
 		return await this.page.screenshot();
 	}
 }

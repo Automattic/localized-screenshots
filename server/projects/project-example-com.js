@@ -14,7 +14,8 @@ class ProjectExmpleCom extends Project {
 		this.config = { ...this.defaultConfig, ...config };
 	}
 
-	async generateLocalizedScreenshot() {
+	async generateLocalizedScreenshot( { actions } ) {
+		await this.doPageActions( actions );
 		return await this.page.screenshot();
 	}
 }

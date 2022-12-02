@@ -23,7 +23,8 @@ function ScreenshotsRequestController() {
 	const { screenshotId } = useParams();
 	const { setScreenshots, setSelectedScreenshotIndex } =
 		useScreenshotsContext();
-	const { setLockedScreen, setSize, setAnnotations } = useCanvasContext();
+	const { setLockedScreen, setSize, setAnnotations, setActions } =
+		useCanvasContext();
 
 	React.useEffect( () => {
 		fetch(
@@ -45,6 +46,7 @@ function ScreenshotsRequestController() {
 							data,
 							meta: {
 								locale,
+								actions: meta.actions,
 								page: meta.page,
 								offset: meta.offset,
 								project: meta.project,
@@ -58,6 +60,7 @@ function ScreenshotsRequestController() {
 					const { page } = meta;
 
 					setLockedScreen( { page } );
+					setActions( meta.actions );
 					setAnnotations( annotations );
 					setScreenshots( screenshots );
 					setSize( {

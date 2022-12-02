@@ -8,6 +8,7 @@ export function useCanvasContext() {
 
 export function CanvasContextProvider( { children } ) {
 	const [ lockedScreen, setLockedScreen ] = React.useState( null );
+	const [ actions, setActions ] = React.useState( [] );
 	const [ annotations, setAnnotations ] = React.useState( null );
 	const [ size, setSize ] = React.useState( { width: 1280, height: 720 } );
 	const [ offset, setOffset ] = React.useState( {
@@ -27,6 +28,8 @@ export function CanvasContextProvider( { children } ) {
 			setSize,
 			offset,
 			setOffset,
+			actions,
+			setActions,
 		} ),
 		[
 			lockedScreen,
@@ -37,6 +40,8 @@ export function CanvasContextProvider( { children } ) {
 			setSize,
 			offset,
 			setOffset,
+			actions,
+			setActions,
 		]
 	);
 

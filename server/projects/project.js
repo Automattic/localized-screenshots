@@ -13,6 +13,7 @@ class Project {
 		fps: 30,
 	};
 	cursor = null;
+	isRecordingActions = true;
 
 	constructor( socket, config = {} ) {
 		this.socket = socket;
@@ -74,6 +75,8 @@ class Project {
 	}
 
 	handleUserMouseInput = async ( { x, y, type } ) => {
+		await this.maybeRecordAction( { type, x, y } );
+
 		if ( [ 'move', 'click', 'wheel' ].includes( type ) ) {
 			await this.page.mouse[ type ]( x, y );
 		} else {
@@ -115,10 +118,11 @@ class Project {
 		this.socket.emit( 'page:screenshot', payload );
 	};
 
-	handleLocalizedScreenshotRequest = async ( { locales, page } ) => {
+	handleLocalizedScreenshotRequest = async ( { locales, page, actions } ) => {
 		for ( const locale of locales ) {
 			const screenshot = await this.generateLocalizedScreenshot( {
 				...page,
+				actions,
 				locale,
 			} );
 			const pageData = await this.getPageData();
@@ -134,6 +138,23 @@ class Project {
 			this.socket.emit( 'page:localizedScreenshot', payload );
 		}
 	};
+
+	async doPageActions( actions ) {
+		if ( ! actions ) {
+			return;
+		}
+
+		try {
+			for ( const action of actions ) {
+				if ( action.type === 'click' ) {
+					await this.page.click( action.selector, { timeout: 2000 } );
+				}
+			}
+		} catch ( error ) {
+			console.log( error );
+			// Unable to execute page actions.
+		}
+	}
 
 	async updateCursor( x, y ) {
 		let cursor;
@@ -172,6 +193,85 @@ class Project {
 			this.socket.emit( 'page:cursor', cursor );
 			this._cursor = cursor;
 		}
+	}
+
+	async maybeRecordAction( { type, x, y } ) {
+		if ( ! this.isRecordingActions ) {
+			return;
+		}
+
+		if ( type === 'click' ) {
+			await this.recordMouseAction( { type, x, y } );
+		}
+	}
+
+	async recordMouseAction( { type, x, y } ) {
+		const selector = (
+			( await this.getElementSelectorFromPoint( x, y ) ) ?? []
+		).join( ' ' );
+		const payload = {
+			type,
+			selector,
+		};
+		this.socket.emit( 'page:action', payload );
+	}
+
+	async getElementSelectorFromPoint( x, y ) {
+		return await this.page.evaluate(
+			( [ x, y ] ) => {
+				let element = document.elementFromPoint( x, y );
+				const path = [];
+
+				while (
+					element?.parentNode &&
+					element?.parentNode?.localName !== 'html'
+				) {
+					// An element with ID attribute adds enough specificity to the selector path,
+					// and therefore going futher up the DOM tree is not needed.
+					if ( element.id ) {
+						path.unshift( `#${ element.id }` );
+						break;
+					}
+
+					let selector;
+
+					if ( element.classList.length ) {
+						selector = `.${ [ ...element.classList ].join( '.' ) }`;
+					} else {
+						selector = element.localName.toLowerCase();
+					}
+
+					// Append :nth-child() to the selector if element has sibligns
+					// with matching class/tag selector.
+					const hasMatchingSiblings = [
+						...element.parentNode.children,
+					].some( ( _element ) => {
+						return (
+							_element !== element && _element.matches( selector )
+						);
+					} );
+
+					if ( hasMatchingSiblings ) {
+						const index = [
+							...element.parentNode.children,
+						].indexOf( element );
+						selector = `${ selector }:nth-child(${ index + 1 })`;
+					}
+
+					path.unshift( selector );
+
+					element = element.parentNode;
+				}
+
+				// @todo:
+				// Selector could be optimized by dropping the unnecessary segments from the path array,
+				// so that it still matches only the target element on the page, but making the selector
+				// a bit more flexible to smaller DOM changes.
+
+				return path;
+			},
+			[ x, y ]
+		);
 	}
 
 	async generateLocalizedScreenshot( { url, locale, scrollX, scrollY } ) {

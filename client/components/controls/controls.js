@@ -4,9 +4,10 @@ import { useCanvasContext, useScreenshotsContext } from '/state';
 import { languages } from '/lib/languages';
 import LockedScreenController from './controller';
 import UploadScreenshots from './upload-screenshots';
+import RecordActions from './record-actions';
 
 export default function Controls() {
-	const { lockedScreen } = useCanvasContext();
+	const { lockedScreen, actions } = useCanvasContext();
 	const { screenshots } = useScreenshotsContext();
 	const [ isLoading, setIsLoading ] = React.useState( false );
 	const [ screenshotsQueue, setScreenshotsQueue ] = React.useState( {} );
@@ -24,7 +25,11 @@ export default function Controls() {
 
 		const { page } = lockedScreen;
 
-		wsClient.emit( 'request:localizedScreenshots', { locales, page } );
+		wsClient.emit( 'request:localizedScreenshots', {
+			locales,
+			page,
+			actions,
+		} );
 		setScreenshotsQueue(
 			locales.reduce( ( queue, locale ) => {
 				queue[ locale ] = {};
@@ -64,19 +69,26 @@ export default function Controls() {
 	return (
 		<ul className="controls">
 			{ ! lockedScreen && (
-				<li>
-					<LockedScreenController />
+				<>
+					<li>
+						<LockedScreenController />
 
-					<button
-						className="button"
-						onClick={ () =>
-							! isLoading && wsClient.emit( 'request:screenshot' )
-						}
-						disabled={ isLoading }
-					>
-						Take Screenshot
-					</button>
-				</li>
+						<button
+							className="button"
+							onClick={ () =>
+								! isLoading &&
+								wsClient.emit( 'request:screenshot' )
+							}
+							disabled={ isLoading }
+						>
+							Take Screenshot
+						</button>
+					</li>
+
+					<li>
+						<RecordActions />
+					</li>
+				</>
 			) }
 
 			{ lockedScreen && (

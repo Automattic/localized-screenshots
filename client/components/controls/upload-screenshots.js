@@ -6,7 +6,7 @@ import { svgToPNGBase64 } from '/lib/helpers';
 import { useEditorContext } from '/components/editor';
 
 export default function UploadScreenshots() {
-	const { offset } = useCanvasContext();
+	const { offset, actions } = useCanvasContext();
 	const { screenshots, setSelectedScreenshotIndex } = useScreenshotsContext();
 	const editorRef = useEditorContext();
 	const { project, resolution } = useParams();
@@ -157,6 +157,7 @@ export default function UploadScreenshots() {
 				'screenshot_meta',
 				JSON.stringify( {
 					annotations: screenshot.annotations,
+					actions,
 					offset,
 					page,
 					project: screenshotMetaProject,
