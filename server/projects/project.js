@@ -13,7 +13,7 @@ class Project {
 		fps: 30,
 	};
 	cursor = null;
-	isRecordingActions = true;
+	isRecordingActions = false;
 
 	constructor( socket, config = {} ) {
 		this.socket = socket;
@@ -98,6 +98,10 @@ class Project {
 			'request:localizedScreenshots',
 			this.handleLocalizedScreenshotRequest
 		);
+		this.socket.on(
+			'request:recordActions',
+			this.handleRecordActionsRequest
+		);
 	}
 
 	getPageData = async () => {
@@ -137,6 +141,10 @@ class Project {
 			};
 			this.socket.emit( 'page:localizedScreenshot', payload );
 		}
+	};
+
+	handleRecordActionsRequest = async ( isRecordingActions ) => {
+		this.isRecordingActions = isRecordingActions;
 	};
 
 	async doPageActions( actions ) {

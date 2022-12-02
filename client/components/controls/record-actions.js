@@ -24,6 +24,12 @@ export default function RecordActions() {
 	const [ isRecording, setIsRecording ] = React.useState( false );
 	const { actions, setActions } = useCanvasContext();
 
+	const handleRecordActionsClick = () => {
+		setIsRecording( ( isRecording ) => {
+			wsClient.emit( 'request:recordActions', ! isRecording );
+			return ! isRecording;
+		} );
+	};
 	const createRemoveActionHandler = React.useCallback(
 		( index ) => {
 			return () =>
@@ -38,12 +44,7 @@ export default function RecordActions() {
 
 	return (
 		<>
-			<button
-				className="button"
-				onClick={ () =>
-					setIsRecording( ( isRecording ) => ! isRecording )
-				}
-			>
+			<button className="button" onClick={ handleRecordActionsClick }>
 				{ isRecording && <i className="recoding-actions-indicator" /> }
 				{ isRecording ? 'Stop Recording' : 'Record Actions' }
 			</button>
