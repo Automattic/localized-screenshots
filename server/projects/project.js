@@ -51,7 +51,7 @@ class Project {
 	}
 
 	notifySessionReady() {
-		this.socket.emit( 'session:ready', true );
+		this.socket.emit( 'response:startSession', true, this.config.uuid );
 	}
 
 	async startScreencast() {
@@ -124,12 +124,14 @@ class Project {
 		};
 	};
 
-	handleScreencastRequest = async ( isEnabled ) => {
+	handleScreencastRequest = async ( isEnabled, uuid ) => {
 		if ( isEnabled ) {
 			this.startScreencast();
 		} else {
 			this.stopScreencast();
 		}
+
+		this.socket.emit( 'response:screencast', isEnabled, uuid );
 	};
 
 	handleScreenshotRequest = async () => {

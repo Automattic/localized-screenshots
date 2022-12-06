@@ -20,21 +20,24 @@ const projectsMap = {
 
 // Handle WebSockets connections.
 io.on( 'connection', ( socket ) => {
-	socket.on( 'session:start', ( { project, width, height } = {} ) => {
-		const config = {};
+	socket.on(
+		'request:startSession',
+		( { project, width, height } = {}, uuid ) => {
+			const config = { uuid };
 
-		if ( Number.isInteger( width ) ) {
-			config.width = width;
+			if ( Number.isInteger( width ) ) {
+				config.width = width;
+			}
+
+			if ( Number.isInteger( height ) ) {
+				config.height = height;
+			}
+
+			const Project = projectsMap[ project ];
+
+			if ( Project ) {
+				new Project( socket, config );
+			}
 		}
-
-		if ( Number.isInteger( height ) ) {
-			config.height = height;
-		}
-
-		const Project = projectsMap[ project ];
-
-		if ( Project ) {
-			new Project( socket, config );
-		}
-	} );
+	);
 } );

@@ -5,11 +5,11 @@ import Nav from '/components/nav';
 import Editor, { EditorProvider } from '/components/editor';
 import { useScreenshotsContext, useCanvasContext } from '/state';
 import { imageToDataURL } from '/lib/helpers';
-import wsClient from '/web-sockets';
+import { request } from '/web-sockets';
 
 function SessionController( { project, width, height } ) {
 	React.useEffect( () => {
-		wsClient.emit( 'session:start', {
+		request( 'startSession', {
 			project,
 			width,
 			height,

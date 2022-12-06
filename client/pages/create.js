@@ -5,7 +5,7 @@ import Nav from '/components/nav';
 import Editor, { EditorProvider } from '/components/editor';
 import Frame from '/components/frame';
 import { useCanvasContext, useSessionContext } from '/state';
-import wsClient from '/web-sockets';
+import { request } from '/web-sockets';
 
 function SessionController() {
 	const { project, resolution } = useParams();
@@ -20,12 +20,11 @@ function SessionController() {
 
 		setSize( { width, height } );
 
-		wsClient.emit( 'session:start', {
+		request( 'startSession', {
 			project,
 			width,
 			height,
-		} );
-		wsClient.once( 'session:ready', ( isReady ) => setIsReady( isReady ) );
+		} ).then( ( isReady ) => setIsReady( isReady ) );
 	}, [] );
 
 	return null;
