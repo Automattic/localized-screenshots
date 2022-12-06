@@ -5,6 +5,7 @@ class Project {
 	socket = null;
 	browser = null;
 	page = null;
+	cdp = null;
 	defaultConfig = {
 		url: 'about:blank',
 		width: 1280,
@@ -26,10 +27,11 @@ class Project {
 		await this.launchBrowser();
 		await this.initPage();
 		await this.loadInitialPage();
-		await this.initScreencast();
 
-		this.bindUserInputHandlers();
 		this.bindRequestHandlers();
+		this.bindUserInputHandlers();
+
+		this.notifySessionReady();
 	}
 
 	async launchBrowser() {
@@ -39,16 +41,21 @@ class Project {
 	async initPage() {
 		this.page = await this.browser.newPage();
 
+		// Chrome Devtools Protocol Session
+		this.cdp = await this.page.context().newCDPSession( this.page );
+
 		await this.page.setViewportSize( {
 			width: this.config.width,
 			height: this.config.height,
 		} );
 	}
 
-	async initScreencast() {
-		const client = await this.page.context().newCDPSession( this.page );
+	notifySessionReady() {
+		this.socket.emit( 'session:ready', true );
+	}
 
-		await client.send( 'Page.startScreencast', {
+	async startScreencast() {
+		await this.cdp.send( 'Page.startScreencast', {
 			format: 'jpeg',
 			quality: this.config.quality,
 			maxWidth: this.config.width,
@@ -56,13 +63,17 @@ class Project {
 			everyNthFrame: 1,
 		} );
 
-		client.on(
+		this.cdp.on(
 			'Page.screencastFrame',
 			throttle( async ( { data, sessionId } ) => {
 				this.socket.emit( 'page:frame', data );
-				await client.send( 'Page.screencastFrameAck', { sessionId } );
+				await this.cdp.send( 'Page.screencastFrameAck', { sessionId } );
 			}, 1000 / this.config.fps )
 		);
+	}
+	async stopScreencast() {
+		await this.cdp.send( 'Page.stopScreencast' );
+		this.cdp.removeAllListeners( 'Page.screencastFrame' );
 	}
 
 	async loadInitialPage() {
@@ -93,6 +104,7 @@ class Project {
 	};
 
 	bindRequestHandlers() {
+		this.socket.on( 'request:screencast', this.handleScreencastRequest );
 		this.socket.on( 'request:screenshot', this.handleScreenshotRequest );
 		this.socket.on(
 			'request:localizedScreenshots',
@@ -110,6 +122,14 @@ class Project {
 			scrollX: await this.page.evaluate( () => window.scrollX ),
 			scrollY: await this.page.evaluate( () => window.scrollY ),
 		};
+	};
+
+	handleScreencastRequest = async ( isEnabled ) => {
+		if ( isEnabled ) {
+			this.startScreencast();
+		} else {
+			this.stopScreencast();
+		}
 	};
 
 	handleScreenshotRequest = async () => {
@@ -159,8 +179,8 @@ class Project {
 				}
 			}
 		} catch ( error ) {
-			console.log( error );
 			// Unable to execute page actions.
+			console.log( error );
 		}
 	}
 

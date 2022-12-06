@@ -1,6 +1,6 @@
 import React from 'react';
-import wsClient from '/web-sockets';
 import throttle from 'lodash.throttle';
+import wsClient from '/web-sockets';
 
 export default function Frame( { width = 1280, height = 720 } ) {
 	const frame = React.useRef( null );
@@ -74,14 +74,20 @@ export default function Frame( { width = 1280, height = 720 } ) {
 		}
 	}, [ frame ] );
 
+	React.useEffect( () => {
+		wsClient.emit( 'request:screencast', true );
+
+		return () => wsClient.emit( 'request:screencast', false );
+	}, [] );
+
 	return (
 		<div style={ { textAlign: 'center' } }>
 			<canvas
 				ref={ frame }
 				width={ width }
 				height={ height }
-				tabIndex="0"
 				style={ { cursor } }
+				tabIndex="0"
 			></canvas>
 		</div>
 	);
