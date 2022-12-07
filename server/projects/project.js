@@ -24,18 +24,25 @@ class Project {
 	}
 
 	async init() {
-		await this.launchBrowser();
-		await this.initPage();
-		await this.loadInitialPage();
+		try {
+			await this.launchBrowser();
+			await this.initPage();
+			await this.loadInitialPage();
 
-		this.bindRequestHandlers();
-		this.bindUserInputHandlers();
+			this.bindRequestHandlers();
+			this.bindUserInputHandlers();
 
-		this.notifySessionReady();
+			this.notifySessionReady();
+		} catch ( error ) {
+			await this.exit();
+		}
 	}
 
 	async launchBrowser() {
 		this.browser = await chromium.launch();
+
+		// Close browser instance when socket disconnects.
+		this.socket.on( 'disconnect', () => this.exit() );
 	}
 
 	async initPage() {
@@ -77,7 +84,7 @@ class Project {
 	}
 
 	async loadInitialPage() {
-		this.page.goto( this.config.url );
+		await this.page.goto( this.config.url );
 	}
 
 	bindUserInputHandlers() {
@@ -306,6 +313,17 @@ class Project {
 
 	async generateLocalizedScreenshot( { url, locale, scrollX, scrollY } ) {
 		// @implement
+	}
+
+	async exit() {
+		// Remove all socket listener.
+		this.socket?.removeAllListeners?.();
+		this.socket?.disconnect?.();
+
+		// Close the browser instance.
+		try {
+			await this.browser?.close?.();
+		} catch ( error ) {}
 	}
 }
 
