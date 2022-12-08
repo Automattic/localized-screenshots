@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 /**
  * WebSockets client.
  */
-export const client = io( 'http://localhost:3004' );
+export const client = io();
 
 /**
  * Make WebSockets request.

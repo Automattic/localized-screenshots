@@ -1,16 +1,34 @@
+const express = require( 'express' );
+const path = require( 'path' );
 const { Server } = require( 'socket.io' );
-const ProjectExampleCom = require( './projects/project-example-com' );
-const ProjectWordPressCom = require( './projects/project-wordpress-com' );
 
 // Load environment variables.
 require( 'dotenv' ).config();
 
-// Start WebSockets server.
-const io = new Server( 3004, {
-	cors: {
-		origin: '*',
-	},
+// Create the Expresss app.
+const app = express();
+
+// Register static files directory.
+app.use( '/assets', express.static( path.join( 'public', 'client' ) ) );
+
+// Handle all routes requests.
+app.get( '*', ( _req, res ) => {
+	res.sendFile( path.join( __dirname, '..', 'public', 'index.html' ) );
 } );
+
+// Start the HTTP server.
+const server = app.listen( process.env.PORT, () =>
+	console.log(
+		`Localized Screenshots is listening on port ${ process.env.PORT }.`
+	)
+);
+
+// Start WebSockets server.
+const io = new Server( server );
+
+// Require projects.
+const ProjectExampleCom = require( './projects/project-example-com' );
+const ProjectWordPressCom = require( './projects/project-wordpress-com' );
 
 // Projects ids mapping.
 const projectsMap = {
