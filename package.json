@@ -8,12 +8,14 @@
 		"yarn": "^3.2.4"
 	},
 	"scripts": {
-		"dev": "run-p dev:serve dev:client dev:server dev:plugin",
-		"dev:serve": "http-server public -p 3003 --proxy \"http://localhost:3003?\"",
+		"build": "yarn run build:client",
+		"build:client": "wp-scripts build client/index.js --config=client/webpack.config.js --output-path=public/client --webpack-no-externals",
+		"dev": "run-p dev:client dev:server dev:plugin",
 		"dev:client": "wp-scripts start client/index.js --config=client/webpack.config.js --output-path=public/client --webpack-no-externals",
 		"dev:server": "nodemon --watch server server",
 		"dev:plugin": "wp-env start && yarn run dev:plugin:rewrite",
-		"dev:plugin:rewrite": "wp-env run cli \"/bin/sh -c \\\"echo apache_modules: mod_rewrite > wp-cli.yml\\\"\" && wp-env run cli \"wp rewrite structure '/%postname%/' --hard\""
+		"dev:plugin:rewrite": "wp-env run cli \"/bin/sh -c \\\"echo apache_modules: mod_rewrite > wp-cli.yml\\\"\" && wp-env run cli \"wp rewrite structure '/%postname%/' --hard\"",
+		"start": "node server"
 	},
 	"repository": {
 		"type": "git",
@@ -31,7 +33,7 @@
 		"@wordpress/prettier-config": "^2.3.0",
 		"@wordpress/scripts": "^24.4.0",
 		"dotenv": "^16.0.3",
-		"http-server": "^14.1.1",
+		"express": "^4.18.2",
 		"lodash.set": "^4.3.2",
 		"lodash.throttle": "^4.1.1",
 		"mobx": "^6.6.2",
