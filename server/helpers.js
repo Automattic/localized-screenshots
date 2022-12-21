@@ -19,6 +19,9 @@ async function makeRequest( { pathname, method = 'GET', data, params } ) {
 		{
 			method,
 			body: data,
+			headers: {
+				'X-Localized-Screenshots-Token': process.env.API_TOKEN,
+			},
 		}
 	);
 
