@@ -4,10 +4,38 @@ class Localized_Screenshots {
 	static $base = 'localized-screenshots/v1';
 
 	public static function init() {
+		add_action( 'admin_menu', array( self::class, 'init_settings_page' ) );
+
 		add_action( 'init', array( self::class, 'register_screenshot_route' ) );
 		add_action( 'rest_api_init', array( self::class, 'register_get_screenshots_endpoint' ) );
 		add_action( 'rest_api_init', array( self::class, 'register_upload_screenshot_endpoint' ) );
 		add_action( 'rest_api_init', array( self::class, 'register_update_screenshot_endpoint' ) );
+	}
+
+	public static function init_settings_page() {
+		add_options_page( 'Localized Screenshots', 'Localized Screenshots', 'manage_options', 'localized-screenshots', array( self::class, 'settings_page' ) );
+
+		register_setting( 'localized_screenshots_settings', 'localized_screenshots_settings' );
+		add_settings_section( 'api_settings', 'API Settings', null, 'localized_screenshots_settings' );
+		add_settings_field( 'localized_screenshots_api_secret', 'API Secret', array( self::class, 'settings_page_api_secret_field' ), 'localized_screenshots_settings', 'api_settings' );
+	}
+
+	public static function settings_page() {
+		?>
+			<h2><?php _e( 'Localized Screenshots Settings', 'localized-screenshots' ); ?></h2>
+			<form action="options.php" method="post">
+				<?php
+					settings_fields( 'localized_screenshots_settings' );
+					do_settings_sections( 'localized_screenshots_settings' );
+				?>
+				<input name="submit" class="button button-primary" type="submit" value="<?php esc_attr_e( 'Save', 'localized-screenshots' ); ?>" />
+			</form>
+		<?php
+	}
+
+	public static function settings_page_api_secret_field() {
+		$settings = get_option( 'localized_screenshots_settings' ) ?? array();
+		echo '<input id="localized_screenshots_api_secret" name="localized_screenshots_settings[api_secret]" type="text" value="' . esc_attr( $settings['api_secret'] ?? '' ) . '" />';
 	}
 
 	public static function register_get_screenshots_endpoint() {
@@ -87,9 +115,12 @@ class Localized_Screenshots {
 		wp_safe_redirect( wp_get_attachment_image_url( $screenshot_id, 'full' ) );
 	}
 
-	public static function is_authorized() {
-		// @todo
-		return true;
+	public static function is_authorized( WP_REST_Request $request ) {
+		$settings    = get_option( 'localized_screenshots_settings' ) ?? array();
+		$api_secret  = $settings['api_secret'] ?? '';
+		$auth_header = $request->get_header( 'X-Localized-Screenshots-Token' );
+
+		return $auth_header === $api_secret;
 	}
 
 	public static function handle_get_screenshots( WP_REST_Request $request ) {
