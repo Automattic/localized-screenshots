@@ -14,8 +14,8 @@ config = set(
 	'plugins',
 	config.plugins.concat(
 		new webpack.DefinePlugin( {
-			API_ROOT: JSON.stringify(
-				process.env.API_ROOT ?? 'http://localhost:8888'
+			API_URL: JSON.stringify(
+				process.env.API_URL ?? 'http://localhost:8888'
 			),
 		} )
 	)

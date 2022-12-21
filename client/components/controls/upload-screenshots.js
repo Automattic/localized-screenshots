@@ -172,12 +172,13 @@ export default function UploadScreenshots() {
 				formData.append( 'screenshot_parent', parentScreenshot );
 			}
 
-			const endpoint = screenshot.id ? 'update' : 'upload';
 			const screenshotId = await (
 				await fetch(
-					`${ API_ROOT }/wp-json/localized-screenshots/v1/${ endpoint }/`,
+					`/api/screenshot${
+						screenshot.id ? `/${ screenshot.id }` : ''
+					}`,
 					{
-						method: 'POST',
+						method: screenshot.id ? 'PUT' : 'POST',
 						body: formData,
 					}
 				)

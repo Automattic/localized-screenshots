@@ -8,6 +8,10 @@ require( 'dotenv' ).config();
 // Create the Expresss app.
 const app = express();
 
+// Use API Router.
+const restAPIRouter = require( './rest-api' );
+app.use( '/api', restAPIRouter );
+
 // Register static files directory.
 app.use( '/assets', express.static( path.join( 'public', 'client' ) ) );
 

@@ -27,14 +27,9 @@ function ScreenshotsRequestController() {
 		useCanvasContext();
 
 	React.useEffect( () => {
-		fetch(
-			`${ API_ROOT }/wp-json/localized-screenshots/v1/get?${ new URLSearchParams(
-				{ id: screenshotId }
-			) }`,
-			{
-				method: 'GET',
-			}
-		)
+		fetch( `/api/screenshot/${ screenshotId }`, {
+			method: 'GET',
+		} )
 			.then( ( response ) => response.json() )
 			.then( async ( payload ) => {
 				return Promise.all(

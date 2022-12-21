@@ -143,7 +143,6 @@ class Localized_Screenshots {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 		}
 
-
 		header( 'Access-Control-Allow-Origin: *' );
 
 		$screenshot_id = $request->get_param( 'screenshot_id' );
