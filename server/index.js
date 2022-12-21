@@ -8,6 +8,11 @@ require( 'dotenv' ).config();
 // Create the Expresss app.
 const app = express();
 
+// Basic Authentication.
+if ( process.env.AUTHENTICATION ) {
+	app.use( require( './auth' ) );
+}
+
 // Use API Router.
 const restAPIRouter = require( './rest-api' );
 app.use( '/api', restAPIRouter );
