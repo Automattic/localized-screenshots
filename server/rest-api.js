@@ -5,6 +5,7 @@ const upload = multer();
 
 const {
 	getScreenshot,
+	getAllScreenshots,
 	uploadScreenshot,
 	updateScreenshot,
 } = require( './helpers' );
@@ -31,6 +32,12 @@ router.put( '/screenshot/:id', upload.any(), ( req, res ) => {
 
 router.post( '/screenshot', upload.any(), ( req, res ) => {
 	uploadScreenshot( req.body, req.files )
+		.then( ( payload ) => res.json( payload ) )
+		.catch( () => res.status( 500 ).send() );
+} );
+
+router.get( '/all-screenshots', ( req, res ) => {
+	getAllScreenshots( req.params.id )
 		.then( ( payload ) => res.json( payload ) )
 		.catch( () => res.status( 500 ).send() );
 } );

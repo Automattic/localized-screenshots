@@ -43,6 +43,17 @@ async function getScreenshot( id ) {
 exports.getScreenshot = getScreenshot;
 
 /**
+ * Get all screenshots.
+ *
+ * @return {Promise<object[]>}    Screenshots data
+ */
+async function getAllScreenshots() {
+	return makeRequest( { pathname: 'all', method: 'GET' } );
+}
+
+exports.getAllScreenshots = getAllScreenshots;
+
+/**
  * Update a screenshot entry.
  *
  * @param  {number} id              Screenshot ID

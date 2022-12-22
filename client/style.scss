@@ -323,12 +323,6 @@ body {
 	display: flex;
 	flex-flow: row nowrap;
 	align-items: center;
-	max-width: 600px;
-	margin: 20px auto;
-	padding: 20px;
-	border-radius: 3px;
-	background: #fff;
-	box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.1);
 
 	& label {
 		margin-right: 0.5em;
@@ -401,5 +395,105 @@ body {
 			padding: 0 0.25em;
 			color: #dc2323;
 		}
+	}
+}
+
+/* Loader */
+.loader {
+	width: 2em;
+	height: 2em;
+	margin: 0 auto;
+	border-width: 0.25em;
+	border-style: solid;
+	border-color: currentColor currentColor transparent;
+	border-radius: 50%;
+	animation: rotation 1s linear infinite;
+
+	@keyframes rotation {
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+}
+
+/* Tabs */
+.tabs {
+	max-width: 600px;
+	margin: 20px auto;
+
+	&__nav {
+		display: flex;
+		align-items: stretch;
+		gap: 0.5em;
+
+		button {
+			padding: 1em 2em;
+			border: none;
+			border-radius: 3px 3px 0 0;
+			background: none;
+			appearance: none;
+			color: #506070;
+			font-weight: bold;
+			cursor: pointer;
+
+			&.active {
+				background: #fff;
+			}
+
+			&:hover {
+				background: rgba(255, 255, 255, 0.8);
+			}
+		}
+	}
+
+	&__body {
+		padding: 20px;
+		border-radius: 0 3px 3px 3px;
+		background: #fff;
+		box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.1);
+	}
+}
+
+/* Browse Screenshots */
+.browse-screenshots {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: stretch;
+	padding: 0;
+	margin: 0;
+	list-style: none outside none;
+
+	li {
+		position: relative;
+		width: 33.33%;
+		padding: 0.5em;
+		min-width: 0;
+
+		&:hover {
+			a {
+				visibility: visible;
+			}
+		}
+	}
+
+	a {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		visibility: hidden;
+		transform: translate(-50%, -50%);
+	}
+
+	img {
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		object-fit: contain;
+		object-position: center center;
+		border: 1px solid #ccc;
+		border-radius: 3px;
+		background: #eee;
 	}
 }

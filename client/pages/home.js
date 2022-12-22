@@ -1,6 +1,9 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
+import Tabs from '/components/tabs';
+import Browse from '/components/browse';
+
 const PROJECTS = [
 	{ id: 'wpcom', title: 'WordPress.com' },
 	{ id: 'example', title: 'Example.com' },
@@ -14,7 +17,7 @@ const RESOLUTIONS = [
 	{ width: 1920, height: 1080 },
 ];
 
-export default function PageHome() {
+function FormCreateNew() {
 	const [ selectedProject, setProject ] = React.useState( '' );
 	const [ selectedResolution, setResolution ] = React.useState( '' );
 	const handleSetProject = ( event ) => setProject( event.target.value );
@@ -63,5 +66,23 @@ export default function PageHome() {
 				</NavLink>
 			) }
 		</div>
+	);
+}
+
+export default function PageHome() {
+	return (
+		<Tabs
+			tabs={ [
+				{
+					title: 'Create New',
+					body: <FormCreateNew />,
+				},
+
+				{
+					title: 'Browse Screenshots',
+					body: <Browse />,
+				},
+			] }
+		/>
 	);
 }
