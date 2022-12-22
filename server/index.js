@@ -9,9 +9,8 @@ require( 'dotenv' ).config();
 const app = express();
 
 // Basic Authentication.
-if ( process.env.AUTHENTICATION ) {
-	app.use( require( './auth' ) );
-}
+const { authMiddleware, isAuthorized } = require( './auth' );
+app.use( authMiddleware );
 
 // Use API Router.
 const restAPIRouter = require( './rest-api' );
@@ -47,6 +46,11 @@ const projectsMap = {
 
 // Handle WebSockets connections.
 io.on( 'connection', ( socket ) => {
+	if ( ! isAuthorized( socket?.handshake?.headers?.authorization ) ) {
+		socket.disconnect();
+		return;
+	}
+
 	socket.on(
 		'request:startSession',
 		( { project, width, height } = {}, uuid ) => {
