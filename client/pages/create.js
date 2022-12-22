@@ -25,6 +25,8 @@ function SessionController() {
 			width,
 			height,
 		} ).then( ( isReady ) => setIsReady( isReady ) );
+
+		return () => request( 'stopSession' );
 	}, [] );
 
 	return null;

@@ -42,19 +42,24 @@ class Project {
 		this.browser = await chromium.launch();
 
 		// Close browser instance when socket disconnects.
-		this.socket.on( 'disconnect', () => this.exit() );
+		this.socket.on( 'disconnect', this.exit );
+		this.socket.on( 'request:stopSession', this.stopSession );
 	}
 
 	async initPage() {
-		this.page = await this.browser.newPage();
+		try {
+			this.page = await this.browser.newPage();
 
-		// Chrome Devtools Protocol Session
-		this.cdp = await this.page.context().newCDPSession( this.page );
+			// Chrome Devtools Protocol Session
+			this.cdp = await this.page.context().newCDPSession( this.page );
 
-		await this.page.setViewportSize( {
-			width: this.config.width,
-			height: this.config.height,
-		} );
+			await this.page.setViewportSize( {
+				width: this.config.width,
+				height: this.config.height,
+			} );
+		} catch ( error ) {
+			console.log( error );
+		}
 	}
 
 	notifySessionReady() {
@@ -84,7 +89,11 @@ class Project {
 	}
 
 	async loadInitialPage() {
-		await this.page.goto( this.config.url );
+		try {
+			await this.page.goto( this.config.url );
+		} catch ( error ) {
+			console.log( error );
+		}
 	}
 
 	bindUserInputHandlers() {
@@ -315,16 +324,20 @@ class Project {
 		// @implement
 	}
 
-	async exit() {
+	stopSession = async () => {
 		// Remove all socket listener.
 		this.socket?.removeAllListeners?.();
-		this.socket?.disconnect?.();
 
 		// Close the browser instance.
 		try {
 			await this.browser?.close?.();
 		} catch ( error ) {}
-	}
+	};
+
+	exit = async () => {
+		await this.stopSession();
+		this.socket?.disconnect?.();
+	};
 }
 
 module.exports = Project;

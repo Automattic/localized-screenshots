@@ -23,7 +23,7 @@ export default function Browse() {
 	return (
 		<ol className="browse-screenshots">
 			{ screenshots.map( ( screenshot ) => (
-				<li>
+				<li key={ screenshot.id }>
 					<img src={ screenshot.url } />
 
 					<NavLink

@@ -14,6 +14,8 @@ function SessionController( { project, width, height } ) {
 			width,
 			height,
 		} );
+
+		return () => request( 'stopSession' );
 	}, [] );
 
 	return null;
