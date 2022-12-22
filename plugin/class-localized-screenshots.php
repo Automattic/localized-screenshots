@@ -112,7 +112,7 @@ class Localized_Screenshots {
 
 		header( 'Access-Control-Allow-Origin: *' );
 
-		wp_safe_redirect( wp_get_attachment_image_url( $screenshot_id, 'full' ) );
+		wp_redirect( wp_get_attachment_image_url( $screenshot_id, 'full' ) );
 	}
 
 	public static function is_authorized( WP_REST_Request $request ) {
