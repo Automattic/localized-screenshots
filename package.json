@@ -4,8 +4,8 @@
 	"description": "Screenshots Tool",
 	"main": "index.js",
 	"engines": {
-		"node": "^16.18.0",
-		"yarn": "^3.2.4"
+		"node": "^18.15.0",
+		"yarn": "^3.4.1"
 	},
 	"scripts": {
 		"build": "yarn run build:client",
