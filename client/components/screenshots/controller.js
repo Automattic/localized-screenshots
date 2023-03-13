@@ -1,13 +1,13 @@
 import React from 'react';
 import wsClient from '/web-sockets';
-import { useCanvasContext, useScreenshotsContext } from '/state';
+import { useCanvasStore, useScreenshotsStore } from '/state';
 import { getLanguageBySlug } from '/lib/languages';
 import { realignShapesForRTL } from '/lib/helpers';
 import { useEditorContext } from '/components/editor';
 
 export default function ScreenshotsController() {
-	const { setScreenshots } = useScreenshotsContext();
-	const { annotations } = useCanvasContext();
+	const { setScreenshots } = useScreenshotsStore();
+	const { annotations } = useCanvasStore();
 	const editorRef = useEditorContext();
 
 	const screenshotsHandler = React.useCallback(

@@ -48,7 +48,8 @@
 		"react-dom": "^18.2.0",
 		"react-router-dom": "^6.4.2",
 		"socket.io": "^4.5.3",
-		"socket.io-client": "^4.5.3"
+		"socket.io-client": "^4.5.3",
+		"zustand": "^4.3.6"
 	},
 	"prettier": "@wordpress/prettier-config"
 }

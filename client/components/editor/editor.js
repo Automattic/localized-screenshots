@@ -2,7 +2,11 @@ import React from 'react';
 import set from 'lodash.set';
 import { Tldraw } from '@tldraw/tldraw';
 
-import { useCanvasContext, useScreenshotsContext } from '/state';
+import {
+	useCanvasStore,
+	useScreenshotsStore,
+	useSelectedScreenshot,
+} from '/state';
 import { useEditorContext } from './context';
 
 function EditorHandle( { position, onChange = () => {} } ) {
@@ -39,7 +43,7 @@ function EditorHandle( { position, onChange = () => {} } ) {
 }
 
 function EditorHandles() {
-	const { offset, setOffset } = useCanvasContext();
+	const { offset, setOffset } = useCanvasStore();
 	const style = {
 		borderTopWidth: `${ offset.top }px`,
 		borderRightWidth: `${ offset.right }px`,
@@ -90,9 +94,10 @@ function EditorHandles() {
 }
 
 export default function Editor() {
-	const { lockedScreen, setAnnotations, size } = useCanvasContext();
-	const { selectedScreenshot, setScreenshots, selectedScreenshotIndex } =
-		useScreenshotsContext();
+	const { lockedScreen, setAnnotations, size } = useCanvasStore();
+	const { setScreenshots, selectedScreenshotIndex, sselected } =
+		useScreenshotsStore();
+	const selectedScreenshot = useSelectedScreenshot();
 	const editorRef = useEditorContext();
 
 	React.useEffect( () => {

@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { useCanvasContext } from '/state';
+import { useCanvasStore } from '/state';
 import wsClient from '/web-sockets';
 
 function RecordActionsController() {
-	const { setActions } = useCanvasContext();
+	const { setActions } = useCanvasStore();
 	const recordActionsHandler = React.useCallback(
 		( payload ) => {
 			setActions( ( actions ) => actions.concat( payload ) );
@@ -22,7 +22,7 @@ function RecordActionsController() {
 
 export default function RecordActions() {
 	const [ isRecording, setIsRecording ] = React.useState( false );
-	const { actions, setActions } = useCanvasContext();
+	const { actions, setActions } = useCanvasStore();
 
 	const handleRecordActionsClick = () => {
 		setIsRecording( ( isRecording ) => {

@@ -3,7 +3,11 @@ import { useParams } from 'react-router-dom';
 
 import Nav from '/components/nav';
 import Editor, { EditorProvider } from '/components/editor';
-import { useScreenshotsContext, useCanvasContext } from '/state';
+import {
+	useScreenshotsStore,
+	useSelectedScreenshot,
+	useCanvasStore,
+} from '/state';
 import { imageToDataURL } from '/lib/helpers';
 import { request } from '/web-sockets';
 
@@ -24,9 +28,9 @@ function SessionController( { project, width, height } ) {
 function ScreenshotsRequestController() {
 	const { screenshotId } = useParams();
 	const { setScreenshots, setSelectedScreenshotIndex } =
-		useScreenshotsContext();
+		useScreenshotsStore();
 	const { setLockedScreen, setSize, setAnnotations, setActions } =
-		useCanvasContext();
+		useCanvasStore();
 
 	React.useEffect( () => {
 		fetch( `/api/screenshot/${ screenshotId }`, {
@@ -73,7 +77,7 @@ function ScreenshotsRequestController() {
 }
 
 export default function PageEdit() {
-	const { selectedScreenshot } = useScreenshotsContext();
+	const selectedScreenshot = useSelectedScreenshot();
 	const projectProps = selectedScreenshot?.meta?.project;
 
 	return (

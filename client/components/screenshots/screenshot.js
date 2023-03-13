@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { useScreenshotsContext } from '/state';
+import { useScreenshotsStore } from '/state';
 
 export default function Screenshot( { screenshot, index } ) {
 	const { selectedScreenshotIndex, setSelectedScreenshotIndex } =
-		useScreenshotsContext();
+		useScreenshotsStore();
 	const { data, meta } = screenshot;
 	const willBeUploaded = ! screenshot.id || screenshot.isUpdated;
 
