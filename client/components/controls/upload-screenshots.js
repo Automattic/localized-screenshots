@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useCanvasContext, useScreenshotsContext } from '/state';
+import { useCanvasStore, useScreenshotsStore } from '/state';
 import { svgToPNGBase64 } from '/lib/helpers';
 import { useEditorContext } from '/components/editor';
 
 export default function UploadScreenshots() {
-	const { offset, actions } = useCanvasContext();
-	const { screenshots, setSelectedScreenshotIndex } = useScreenshotsContext();
+	const { offset, actions } = useCanvasStore();
+	const { screenshots, setSelectedScreenshotIndex } = useScreenshotsStore();
 	const editorRef = useEditorContext();
 	const { project, resolution } = useParams();
 	const [ isLoading, setIsLoading ] = React.useState( false );

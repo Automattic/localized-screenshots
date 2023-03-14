@@ -1,14 +1,14 @@
 import React from 'react';
 import wsClient from '/web-sockets';
-import { useCanvasContext, useScreenshotsContext } from '/state';
+import { useCanvasStore, useScreenshotsStore } from '/state';
 import { languages } from '/lib/languages';
 import LockedScreenController from './controller';
 import UploadScreenshots from './upload-screenshots';
 import RecordActions from './record-actions';
 
 export default function Controls() {
-	const { lockedScreen, actions } = useCanvasContext();
-	const { screenshots } = useScreenshotsContext();
+	const { lockedScreen, actions } = useCanvasStore();
+	const { screenshots } = useScreenshotsStore();
 	const [ isLoading, setIsLoading ] = React.useState( false );
 	const [ screenshotsQueue, setScreenshotsQueue ] = React.useState( {} );
 	const [ locales, setLocales ] = React.useState( [] );

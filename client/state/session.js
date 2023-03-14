@@ -1,25 +1,7 @@
-import React from 'react';
+import { create } from 'zustand';
+import { createStoreSetter } from '/state/utils';
 
-const SessionContext = React.createContext();
-
-export function useSessionContext() {
-	return React.useContext( SessionContext );
-}
-
-export function SessionContextProvider( { children } ) {
-	const [ isReady, setIsReady ] = React.useState( false );
-
-	const context = React.useMemo(
-		() => ( {
-			isReady,
-			setIsReady,
-		} ),
-		[ isReady, setIsReady ]
-	);
-
-	return (
-		<SessionContext.Provider value={ context }>
-			{ children }
-		</SessionContext.Provider>
-	);
-}
+export const useSessionStore = create( ( set ) => ( {
+	isReady: false,
+	setIsReady: createStoreSetter( set, 'isReady' ),
+} ) );

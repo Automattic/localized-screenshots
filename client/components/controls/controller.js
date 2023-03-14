@@ -1,9 +1,9 @@
 import React from 'react';
 import wsClient from '/web-sockets';
-import { useCanvasContext } from '/state';
+import { useCanvasStore } from '/state';
 
 export default function LockedScreenController() {
-	const { setLockedScreen } = useCanvasContext();
+	const { setLockedScreen } = useCanvasStore();
 	const lockedScreenHandler = React.useCallback(
 		( payload ) => {
 			setLockedScreen( payload );

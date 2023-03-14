@@ -1,9 +1,9 @@
 import React from 'react';
-import { useScreenshotsContext } from '/state';
+import { useScreenshotsStore } from '/state';
 import Screenshot from './screenshot';
 
 export default function ScreenshotsList() {
-	const { screenshots } = useScreenshotsContext();
+	const { screenshots } = useScreenshotsStore();
 
 	if ( screenshots.length === 0 ) {
 		return;

@@ -1,53 +1,20 @@
-import React from 'react';
+import { create } from 'zustand';
+import { createStoreSetter } from '/state/utils';
 
-const CanvasContext = React.createContext();
-
-export function useCanvasContext() {
-	return React.useContext( CanvasContext );
-}
-
-export function CanvasContextProvider( { children } ) {
-	const [ lockedScreen, setLockedScreen ] = React.useState( null );
-	const [ actions, setActions ] = React.useState( [] );
-	const [ annotations, setAnnotations ] = React.useState( null );
-	const [ size, setSize ] = React.useState( { width: 1280, height: 720 } );
-	const [ offset, setOffset ] = React.useState( {
+export const useCanvasStore = create( ( set ) => ( {
+	lockedScreen: null,
+	setLockedScreen: createStoreSetter( set, 'lockedScreen' ),
+	actions: [],
+	setActions: createStoreSetter( set, 'actions' ),
+	annotations: null,
+	setAnnotations: createStoreSetter( set, 'annotations' ),
+	size: { width: 1280, height: 720 },
+	setSize: createStoreSetter( set, 'size' ),
+	offset: {
 		top: 0,
 		right: 0,
 		bottom: 0,
 		left: 0,
-	} );
-
-	const context = React.useMemo(
-		() => ( {
-			lockedScreen,
-			setLockedScreen,
-			annotations,
-			setAnnotations,
-			size,
-			setSize,
-			offset,
-			setOffset,
-			actions,
-			setActions,
-		} ),
-		[
-			lockedScreen,
-			setLockedScreen,
-			annotations,
-			setAnnotations,
-			size,
-			setSize,
-			offset,
-			setOffset,
-			actions,
-			setActions,
-		]
-	);
-
-	return (
-		<CanvasContext.Provider value={ context }>
-			{ children }
-		</CanvasContext.Provider>
-	);
-}
+	},
+	setOffset: createStoreSetter( set, 'offset' ),
+} ) );

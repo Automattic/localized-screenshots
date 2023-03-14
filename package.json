@@ -4,8 +4,8 @@
 	"description": "Screenshots Tool",
 	"main": "index.js",
 	"engines": {
-		"node": "^16.18.0",
-		"yarn": "^3.2.4"
+		"node": "^18.15.0",
+		"yarn": "^3.4.1"
 	},
 	"scripts": {
 		"build": "yarn run build:client",
@@ -48,7 +48,8 @@
 		"react-dom": "^18.2.0",
 		"react-router-dom": "^6.4.2",
 		"socket.io": "^4.5.3",
-		"socket.io-client": "^4.5.3"
+		"socket.io-client": "^4.5.3",
+		"zustand": "^4.3.6"
 	},
 	"prettier": "@wordpress/prettier-config"
 }
