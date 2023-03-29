@@ -99,7 +99,9 @@ function Home() {
 		<div className="p-4 text-center">
 			<div className="inline-flex gap-4 items-end p-8 bg-white rounded-md shadow-md text-left">
 				<label className="w-64">
-					<span class="block text-slate-600 text-sm mb-2">Site:</span>
+					<span className="block text-slate-600 text-sm mb-2">
+						Site:
+					</span>
 					<select className="block w-full rounded-md border-slate-300 focus:border-slate-400 focus:ring focus:ring-slate-600 focus:ring-opacity-10">
 						<option>WordPress.com</option>
 						<option>WordPress.com</option>
@@ -107,7 +109,7 @@ function Home() {
 				</label>
 
 				<label className="w-64">
-					<span class="block text-slate-600 text-sm mb-2">
+					<span className="block text-slate-600 text-sm mb-2">
 						Resolution:
 					</span>
 					<select className="block w-full rounded-md border-slate-300 focus:border-slate-400 focus:ring focus:ring-slate-600 focus:ring-opacity-10">
@@ -386,7 +388,7 @@ function Edit() {
 			<nav className="flex items-stretch gap-1 mt-4">
 				<a
 					href="#"
-					class="relative inline-flex items-center p-2 bg-white hover:bg-slate-100 border border-slate-300 rounded text-slate-600"
+					className="relative inline-flex items-center p-2 bg-white hover:bg-slate-100 border border-slate-300 rounded text-slate-600"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -406,14 +408,14 @@ function Edit() {
 
 				<a
 					href="#"
-					class="relative inline-flex items-center py-2 px-4 bg-white hover:bg-slate-100 border border-slate-300 rounded text-slate-600"
+					className="relative inline-flex items-center py-2 px-4 bg-white hover:bg-slate-100 border border-slate-300 rounded text-slate-600"
 				>
 					1
 				</a>
 
 				<a
 					href="#"
-					class="relative inline-flex items-center py-2 px-4 bg-slate-600 border border-slate-600 rounded text-white pointer-events-none"
+					className="relative inline-flex items-center py-2 px-4 bg-slate-600 border border-slate-600 rounded text-white pointer-events-none"
 				>
 					2
 				</a>
@@ -422,21 +424,21 @@ function Edit() {
 
 				<a
 					href="#"
-					class="relative inline-flex items-center py-2 px-4 bg-white hover:bg-slate-100 border border-slate-300 rounded text-slate-600"
+					className="relative inline-flex items-center py-2 px-4 bg-white hover:bg-slate-100 border border-slate-300 rounded text-slate-600"
 				>
 					9
 				</a>
 
 				<a
 					href="#"
-					class="relative inline-flex items-center py-2 px-4 bg-white hover:bg-slate-100 border border-slate-300 rounded text-slate-600"
+					className="relative inline-flex items-center py-2 px-4 bg-white hover:bg-slate-100 border border-slate-300 rounded text-slate-600"
 				>
 					10
 				</a>
 
 				<a
 					href="#"
-					class="relative inline-flex items-center p-2 bg-white hover:bg-slate-100 border border-slate-300 rounded text-slate-600"
+					className="relative inline-flex items-center p-2 bg-white hover:bg-slate-100 border border-slate-300 rounded text-slate-600"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
