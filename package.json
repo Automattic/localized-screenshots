@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"engines": {
 		"node": "^18.15.0",
-		"yarn": "^3.4.1"
+		"yarn": "^3.5.0"
 	},
 	"scripts": {
 		"build": "yarn run build:client",
@@ -51,5 +51,9 @@
 		"socket.io-client": "^4.5.3",
 		"zustand": "^4.3.6"
 	},
-	"prettier": "@wordpress/prettier-config"
+	"prettier": "@wordpress/prettier-config",
+	"volta": {
+		"node": "18.15.0",
+		"yarn": "3.5.0"
+	}
 }
