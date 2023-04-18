@@ -95,33 +95,140 @@ function Page() {
 }
 
 function Home() {
+	const [ account, setAccount ] = React.useState( 0 );
+
 	return (
 		<div className="p-4 text-center">
-			<div className="inline-flex gap-4 items-end p-8 bg-white rounded-md shadow-md text-left">
-				<label className="w-64">
-					<span className="block text-slate-600 text-sm mb-2">
-						Site:
-					</span>
-					<select className="block w-full rounded-md border-slate-300 focus:border-slate-400 focus:ring focus:ring-slate-600 focus:ring-opacity-10">
-						<option>WordPress.com</option>
-						<option>WordPress.com</option>
-					</select>
-				</label>
+			<div className="inline-flex gap-4 items-start p-8 bg-white rounded-xl shadow-2xl text-left">
+				<div className="w-96">
+					<label>
+						<span className="block text-slate-600 text-sm mb-2">
+							Case:
+						</span>
+						<select
+							className="block w-full rounded-md border-slate-300 focus:border-slate-400 focus:ring focus:ring-slate-600 focus:ring-opacity-10"
+							value={ account }
+							onChange={ ( event ) =>
+								console.log( event.target.value ) ||
+								setAccount( event.target.value )
+							}
+						>
+							<optgroup label="WordPress.com">
+								<option>
+									WordPress.com Account with Free Site
+								</option>
+								<option>
+									WordPress.com Account with Business Site
+								</option>
+								<option>
+									WordPress.com Account with Commerce Site
+								</option>
+								<option value="custom">
+									WordPress.com Custom Account
+								</option>
+							</optgroup>
+						</select>
+					</label>
+					{ account === 'custom' && (
+						<div className="flex gap-2 mt-2 p-1 bg-slate-100 rounded-md">
+							<input
+								className="block w-full rounded-md border-slate-300 focus:border-slate-400 focus:ring focus:ring-slate-600 focus:ring-opacity-10"
+								type="text"
+								placeholder="Username"
+							/>
 
-				<label className="w-64">
+							<input
+								className="block w-full rounded-md border-slate-300 focus:border-slate-400 focus:ring focus:ring-slate-600 focus:ring-opacity-10"
+								type="password"
+								placeholder="Password"
+							/>
+						</div>
+					) }
+				</div>
+
+				<label>
 					<span className="block text-slate-600 text-sm mb-2">
-						Resolution:
+						Screen Size:
 					</span>
-					<select className="block w-full rounded-md border-slate-300 focus:border-slate-400 focus:ring focus:ring-slate-600 focus:ring-opacity-10">
-						<option>768x1024</option>
-						<option selected>1280x800</option>
-						<option>1920x1080</option>
-					</select>
+
+					<div className="flex items-center">
+						<button className="p-1 text-black hover:text-black cursor-pointer">
+							<svg
+								width="36"
+								height="36"
+								ariaHidden="true"
+								fill="none"
+								viewBox="0 0 36 36"
+							>
+								<rect
+									width="24"
+									height="18"
+									x="6"
+									y="9"
+									stroke="currentColor"
+									strokeWidth="1.5"
+									rx="1.25"
+								></rect>
+								<path
+									fill="currentColor"
+									d="M3 26.5H33V28H3z"
+								></path>
+							</svg>
+						</button>
+
+						<button className="p-1 text-slate-300 hover:text-black cursor-pointer">
+							<svg
+								width="24"
+								height="24"
+								ariaHidden="true"
+								fill="none"
+								viewBox="0 0 24 24"
+							>
+								<rect
+									width="18"
+									height="20"
+									x="3"
+									y="2"
+									stroke="currentColor"
+									strokeWidth="1.5"
+									rx="1.25"
+								></rect>
+								<path
+									fill="currentColor"
+									d="M10 17H14V18.5H10z"
+								></path>
+							</svg>
+						</button>
+
+						<button className="p-1 text-slate-300 hover:text-black cursor-pointer">
+							<svg
+								width="24"
+								height="24"
+								ariaHidden="true"
+								fill="none"
+								viewBox="0 0 24 24"
+							>
+								<rect
+									width="12"
+									height="18"
+									x="6"
+									y="3"
+									stroke="currentColor"
+									strokeWidth="1.5"
+									rx="1.25"
+								></rect>
+								<path
+									fill="currentColor"
+									d="M11 17H13V18.5H11z"
+								></path>
+							</svg>
+						</button>
+					</div>
 				</label>
 
 				<NavLink
 					to="/mockups/create"
-					className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 border border-emerald-700 rounded"
+					className="flex items-center self-stretch gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 border border-emerald-700 rounded"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -146,7 +253,7 @@ function Home() {
 				</NavLink>
 			</div>
 
-			<button className="flex items-center justify-center gap-2 mx-auto mt-2 bg-slate-500 hover:bg-slate-600 text-white font-bold py-2 px-4 border border-slate-500 rounded">
+			<button className="flex items-center justify-center gap-2 mx-auto mt-8 bg-slate-500 hover:bg-slate-600 text-white font-bold py-2 px-4 border border-slate-500 rounded">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
@@ -184,6 +291,13 @@ function EditItem() {
 					className="w-full bg-gray-100 px-4 py-2 rounded"
 					value="https://wordpress.com/me/account"
 				/>
+
+				<p class="text-xs text-slate-600 mt-4">
+					<span className="p-1 rounded-md text-slate-500 bg-slate-200">
+						Case:
+					</span>{ ' ' }
+					<span>WordPress.com Account with Free Site</span>
+				</p>
 			</td>
 			<td className="border-t border-slate-200 align-middle py-4 px-2">
 				<a
@@ -253,7 +367,7 @@ function Edit() {
 				<table className="border-collapse table-auto w-full text-sm">
 					<thead>
 						<tr>
-							<th className="py-2 px-4">
+							<th className="p-2">
 								<h4 className="text-slate-600 font-bold flex items-center gap-2">
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -272,7 +386,7 @@ function Edit() {
 									Screenshot
 								</h4>
 							</th>
-							<th className="py-2 px-4">
+							<th className="p-2">
 								<h4 className="text-slate-600 font-bold flex items-center gap-2">
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -291,7 +405,7 @@ function Edit() {
 									URL
 								</h4>
 							</th>
-							<th className="py-2 px-4">
+							<th className="p-2">
 								<h4 className="text-slate-600 font-bold flex items-center gap-2">
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -310,7 +424,7 @@ function Edit() {
 									Used in
 								</h4>
 							</th>
-							<th className="py-2 px-4">
+							<th className="p-2">
 								<h4 className="text-slate-600 font-bold flex items-center gap-2">
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -329,7 +443,7 @@ function Edit() {
 									Created by
 								</h4>
 							</th>
-							<th className="py-2 px-4">
+							<th className="p-2">
 								<h4 className="text-slate-600 font-bold flex items-center gap-2">
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -348,7 +462,7 @@ function Edit() {
 									Date
 								</h4>
 							</th>
-							<th className="py-2 px-4">
+							<th className="p-2">
 								<h4 className="text-slate-600 font-bold flex items-center gap-2">
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -461,142 +575,9 @@ function Edit() {
 }
 
 function Create() {
-	const [ macro, setMacro ] = React.useState( false );
-
 	return (
 		<div className="flex items-stetch h-screen">
 			<div className="w-64 p-2 bg-slate-800 border-t border-slate-600 text-white">
-				<div className="mb-2 pb-2 border-b border-slate-600">
-					<h4 className="flex items-center justify-between mb-2 pb-2 text-slate-100 text-base border-b border-slate-600">
-						<span>Macro Action:</span>
-
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							strokeWidth={ 1.5 }
-							stroke="currentColor"
-							className="w-6 h-6 cursor-pointer text-slate-400 hover:text-sky-600"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-							/>
-						</svg>
-					</h4>
-
-					{ macro && (
-						<ol className="list-none p-2 mb-2 bg-slate-700 border border-slate-600 rounded">
-							<li className="flex items-start mb-1 pb-1 border-b border-dotted border-slate-500">
-								<div className="flex items-center flex-nowrap mr-2 text-yellow-200 text-[11px]">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 15 15"
-										strokeWidth={ 1.5 }
-										stroke="currentColor"
-										className="w-4 h-4 mr-1"
-									>
-										<path d="M7.5 4v3m0 7.5a5 5 0 01-5-5v-4a5 5 0 0110 0v4a5 5 0 01-5 5z" />
-									</svg>
-
-									<span className="uppercase">click</span>
-								</div>
-								<span className="font-mono text-slate-400 text-[10px] truncate">
-									body{ ' ' }
-									<span className="text-slate-500">
-										&rsaquo;
-									</span>{ ' ' }
-									.container{ ' ' }
-									<span className="text-slate-500">
-										&rsaquo;
-									</span>
-									.logo-link
-								</span>
-							</li>
-							<li className="flex items-start mb-1 pb-1 border-b border-dotted border-slate-500">
-								<div className="flex items-center flex-nowrap mr-2 text-yellow-200 text-[11px] leading-3">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										fill="currentColor"
-										viewBox="0 0 576 512"
-										className="w-4 h-4 mr-1"
-									>
-										<path d="M512 64H64C28.65 64 0 92.65 0 128v256c0 35.35 28.65 64 64 64h448c35.35 0 64-28.65 64-64V128c0-35.35-28.7-64-64-64zm16 320c0 8.822-7.178 16-16 16H64c-8.822 0-16-7.178-16-16V128c0-8.822 7.178-16 16-16h448c8.822 0 16 7.178 16 16v256zM140 152h-24c-6.656 0-12 5.344-12 12v24c0 6.656 5.344 12 12 12h24c6.656 0 12-5.344 12-12v-24c0-6.7-5.3-12-12-12zm56 48h24c6.656 0 12-5.344 12-12v-24c0-6.656-5.344-12-12-12h-24c-6.656 0-12 5.344-12 12v24c0 6.7 5.3 12 12 12zm80 0h24c6.656 0 12-5.344 12-12v-24c0-6.656-5.344-12-12-12h-24c-6.656 0-12 5.344-12 12v24c0 6.7 5.3 12 12 12zm80 0h24c6.656 0 12-5.344 12-12v-24c0-6.656-5.344-12-12-12h-24c-6.656 0-12 5.344-12 12v24c0 6.7 5.3 12 12 12zm104-48h-24c-6.656 0-12 5.344-12 12v24c0 6.656 5.344 12 12 12h24c6.656 0 12-5.344 12-12v-24c0-6.7-5.3-12-12-12zm-320 80h-24c-6.656 0-12 5.344-12 12v24c0 6.656 5.344 12 12 12h24c6.656 0 12-5.344 12-12v-24c0-6.7-5.3-12-12-12zm56 48h24c6.656 0 12-5.344 12-12v-24c0-6.656-5.344-12-12-12h-24c-6.656 0-12 5.344-12 12v24c0 6.7 5.3 12 12 12zm80 0h24c6.656 0 12-5.344 12-12v-24c0-6.656-5.344-12-12-12h-24c-6.656 0-12 5.344-12 12v24c0 6.7 5.3 12 12 12zm80 0h24c6.656 0 12-5.344 12-12v-24c0-6.656-5.344-12-12-12h-24c-6.656 0-12 5.344-12 12v24c0 6.7 5.3 12 12 12zm104-48h-24c-6.656 0-12 5.344-12 12v24c0 6.656 5.344 12 12 12h24c6.656 0 12-5.344 12-12v-24c0-6.7-5.3-12-12-12zm-60 88H176c-8.9 0-16 7.1-16 16v16c0 8.875 7.125 16 16 16h224c8.875 0 16-7.125 16-16v-16c0-8.9-7.1-16-16-16z" />
-									</svg>
-
-									<span className="uppercase">key press</span>
-								</div>
-								<span className="font-mono text-slate-400 text-[10px]">
-									Escape
-								</span>
-							</li>
-							<li className="flex items-start mb-1 pb-1 border-b border-dotted border-slate-500">
-								<div className="flex items-center flex-nowrap mr-2 text-yellow-200 text-[11px] leading-3">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										fill="currentColor"
-										viewBox="0 0 576 512"
-										className="w-4 h-4 mr-1"
-									>
-										<path d="M512 64H64C28.65 64 0 92.65 0 128v256c0 35.35 28.65 64 64 64h448c35.35 0 64-28.65 64-64V128c0-35.35-28.7-64-64-64zm16 320c0 8.822-7.178 16-16 16H64c-8.822 0-16-7.178-16-16V128c0-8.822 7.178-16 16-16h448c8.822 0 16 7.178 16 16v256zM140 152h-24c-6.656 0-12 5.344-12 12v24c0 6.656 5.344 12 12 12h24c6.656 0 12-5.344 12-12v-24c0-6.7-5.3-12-12-12zm56 48h24c6.656 0 12-5.344 12-12v-24c0-6.656-5.344-12-12-12h-24c-6.656 0-12 5.344-12 12v24c0 6.7 5.3 12 12 12zm80 0h24c6.656 0 12-5.344 12-12v-24c0-6.656-5.344-12-12-12h-24c-6.656 0-12 5.344-12 12v24c0 6.7 5.3 12 12 12zm80 0h24c6.656 0 12-5.344 12-12v-24c0-6.656-5.344-12-12-12h-24c-6.656 0-12 5.344-12 12v24c0 6.7 5.3 12 12 12zm104-48h-24c-6.656 0-12 5.344-12 12v24c0 6.656 5.344 12 12 12h24c6.656 0 12-5.344 12-12v-24c0-6.7-5.3-12-12-12zm-320 80h-24c-6.656 0-12 5.344-12 12v24c0 6.656 5.344 12 12 12h24c6.656 0 12-5.344 12-12v-24c0-6.7-5.3-12-12-12zm56 48h24c6.656 0 12-5.344 12-12v-24c0-6.656-5.344-12-12-12h-24c-6.656 0-12 5.344-12 12v24c0 6.7 5.3 12 12 12zm80 0h24c6.656 0 12-5.344 12-12v-24c0-6.656-5.344-12-12-12h-24c-6.656 0-12 5.344-12 12v24c0 6.7 5.3 12 12 12zm80 0h24c6.656 0 12-5.344 12-12v-24c0-6.656-5.344-12-12-12h-24c-6.656 0-12 5.344-12 12v24c0 6.7 5.3 12 12 12zm104-48h-24c-6.656 0-12 5.344-12 12v24c0 6.656 5.344 12 12 12h24c6.656 0 12-5.344 12-12v-24c0-6.7-5.3-12-12-12zm-60 88H176c-8.9 0-16 7.1-16 16v16c0 8.875 7.125 16 16 16h224c8.875 0 16-7.125 16-16v-16c0-8.9-7.1-16-16-16z" />
-									</svg>
-
-									<span className="uppercase">type</span>
-								</div>
-								<span className="font-mono text-slate-400 text-[10px]">
-									"John Doe"
-								</span>
-							</li>
-							<li className="flex items-start">
-								<div className="flex items-center flex-nowrap mr-2 text-yellow-200 text-[11px]">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 15 15"
-										strokeWidth={ 1.5 }
-										stroke="currentColor"
-										className="w-4 h-4 mr-1"
-									>
-										<path d="M7.5 4v3m0 7.5a5 5 0 01-5-5v-4a5 5 0 0110 0v4a5 5 0 01-5 5z" />
-									</svg>
-
-									<span className="uppercase">click</span>
-								</div>
-								<span className="font-mono text-slate-400 text-[10px]">
-									.container{ ' ' }
-									<span className="text-slate-500">
-										&rsaquo;
-									</span>{ ' ' }
-									.submit
-								</span>
-							</li>
-						</ol>
-					) }
-
-					<button
-						className="flex items-center justify-center gap-2 w-full bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-4 border border-slate-600 rounded"
-						onClick={ () => setMacro( true ) }
-					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							strokeWidth={ 1.5 }
-							stroke="currentColor"
-							className="w-6 h-6"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
-							/>
-						</svg>
-						Record Actions
-					</button>
-				</div>
-
 				<NavLink
 					to="/mockups/create/step-2"
 					className="flex items-center justify-center gap-2 w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 border border-sky-600 rounded"
@@ -625,11 +606,11 @@ function Create() {
 			</div>
 
 			<div className="grow p-4 pt-8">
-				<div className="relative container mx-auto border border-slate-300 shadow-md rounded-md">
-					<div className="bg-slate-200 border-b border-slate-300 rounded-t-md px-4 py-2">
+				<div className="relative container mx-auto bg-white p-2 shadow-2xl rounded-xl">
+					<div className="mb-2">
 						<input
 							type="text"
-							className="w-full bg-slate-300 border-0 rounded-full text-xs text-slate-500"
+							className="w-full bg-slate-100 border-0 rounded-md text-xs text-slate-500"
 							value="https://wordpress.com/account/me"
 							disabled
 						/>
@@ -703,7 +684,7 @@ function ProgressBar( { onFinish } ) {
 	);
 
 	return (
-		<div className="mt-4">
+		<div className="mt-4 py-8 relative w-64">
 			<div className="bg-slate-600 h-2 rounded-md">
 				<div
 					className="h-full bg-sky-500 rounded-md transition-all"
@@ -716,7 +697,7 @@ function ProgressBar( { onFinish } ) {
 				{ languages.length })
 			</div>
 
-			<div className="text-xs text-slate-400">
+			<div className="mt-1 text-xs text-slate-400">
 				<strong>
 					Generating { languages[ currentLanguageIndex ].name }
 					&hellip;
@@ -737,72 +718,20 @@ function ProgressBar( { onFinish } ) {
 function ResizeButtons() {
 	return (
 		<>
-			<button className="absolute left-full top-1/2 flex items-center bg-slate-200 hover:bg-slate-100 border border-slate-300 rounded-r">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					strokeWidth={ 1.5 }
-					stroke="currentColor"
-					className="w-6 h-6 rotate-90"
-				>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
-					/>
-				</svg>
+			<button className="absolute left-full top-1/2 -translate-y-1/2 h-40 px-2 flex items-center bg-white rounded-r cursor-ew-resize hover:opacity-80">
+				<i className="w-2 h-4 border-x-2 border-slate-500 " />
 			</button>
 
-			<button className="absolute right-full top-1/2 flex items-center bg-slate-200 hover:bg-slate-100 border border-slate-300 rounded-l">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					strokeWidth={ 1.5 }
-					stroke="currentColor"
-					className="w-6 h-6 rotate-90"
-				>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
-					/>
-				</svg>
+			<button className="absolute right-full top-1/2 -translate-y-1/2 h-40 px-2 flex items-center bg-white rounded-l cursor-ew-resize hover:opacity-80">
+				<i className="w-2 h-4 border-x-2 border-slate-500 " />
 			</button>
 
-			<button className="absolute top-full left-1/2 flex items-center bg-slate-200 hover:bg-slate-100 border border-slate-300 rounded-b">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					strokeWidth={ 1.5 }
-					stroke="currentColor"
-					className="w-6 h-6"
-				>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
-					/>
-				</svg>
+			<button className="absolute top-full left-1/2 -translate-x-1/2 w-40 py-2 flex justify-center bg-white rounded-b cursor-ns-resize hover:opacity-80">
+				<i className="w-4 h-2 border-y-2 border-slate-500 " />
 			</button>
 
-			<button className="absolute bottom-full left-1/2 flex items-center bg-slate-200 hover:bg-slate-100 border border-slate-300 rounded-t">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					strokeWidth={ 1.5 }
-					stroke="currentColor"
-					className="w-6 h-6"
-				>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
-					/>
-				</svg>
+			<button className="absolute bottom-full left-1/2 -translate-x-1/2 w-40 py-2 flex justify-center bg-white rounded-t cursor-ns-resize hover:opacity-80">
+				<i className="w-4 h-2 border-y-2 border-slate-500 " />
 			</button>
 		</>
 	);
@@ -855,12 +784,6 @@ function CreateStep2() {
 								adipisicing elit. Earum deserunt quam modi
 								facere, inventore placeat?
 							</div>
-						) }
-
-						{ isGenerating && (
-							<ProgressBar
-								onFinish={ () => setHasGenerated( true ) }
-							/>
 						) }
 					</>
 				) }
@@ -941,9 +864,99 @@ function CreateStep2() {
 						</div>
 
 						<div className="flex items-stretch justify-center relative mb-4">
+							<span className="px-4 bg-slate-200 rounded-l-full flex items-center border border-slate-300">
+								English
+							</span>
 							<input
 								type="text"
-								className="w-1/3 bg-white px-4 border-white rounded-l-full shadow"
+								className="w-1/3 bg-white px-4 border-white shadow"
+								value="https://localizedscreenshotsteststoragesite1.wpcomstaging.com/screenshot/screenshot-slug"
+								disabled
+							/>
+							<button className="flex items-center justify-center gap-2 bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-4 border border-slate-600 rounded-r-full">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									strokeWidth={ 1.5 }
+									stroke="currentColor"
+									className="w-6 h-6"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"
+									/>
+								</svg>
+								Copy Link
+							</button>
+						</div>
+
+						<div className="flex items-stretch justify-center relative mb-4">
+							<span className="px-4 bg-slate-200 rounded-l-full flex items-center border border-slate-300">
+								Spanish
+							</span>
+							<input
+								type="text"
+								className="w-1/3 bg-white px-4 border-white shadow"
+								value="https://localizedscreenshotsteststoragesite1.wpcomstaging.com/screenshot/screenshot-slug"
+								disabled
+							/>
+							<button className="flex items-center justify-center gap-2 bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-4 border border-slate-600 rounded-r-full">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									strokeWidth={ 1.5 }
+									stroke="currentColor"
+									className="w-6 h-6"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"
+									/>
+								</svg>
+								Copy Link
+							</button>
+						</div>
+
+						<div className="flex items-stretch justify-center relative mb-4">
+							<span className="px-4 bg-slate-200 rounded-l-full flex items-center border border-slate-300">
+								German
+							</span>
+							<input
+								type="text"
+								className="w-1/3 bg-white px-4 border-white shadow"
+								value="https://localizedscreenshotsteststoragesite1.wpcomstaging.com/screenshot/screenshot-slug"
+								disabled
+							/>
+							<button className="flex items-center justify-center gap-2 bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-4 border border-slate-600 rounded-r-full">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									strokeWidth={ 1.5 }
+									stroke="currentColor"
+									className="w-6 h-6"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"
+									/>
+								</svg>
+								Copy Link
+							</button>
+						</div>
+
+						<div className="flex items-stretch justify-center relative mb-4">
+							<span className="px-4 bg-slate-200 rounded-l-full flex items-center border border-slate-300">
+								French
+							</span>
+							<input
+								type="text"
+								className="w-1/3 bg-white px-4 border-white shadow"
 								value="https://localizedscreenshotsteststoragesite1.wpcomstaging.com/screenshot/screenshot-slug"
 								disabled
 							/>
@@ -968,9 +981,11 @@ function CreateStep2() {
 					</div>
 				) }
 
-				<div className="container mx-auto border border-slate-300 shadow-md rounded-md">
+				<div className="container relative mx-auto bg-white p-2 shadow-2xl rounded-xl">
 					<div className="relative">
-						<Tldraw showMenu={ false } showPages={ false } />
+						{ ! isGenerating && (
+							<Tldraw showMenu={ false } showPages={ false } />
+						) }
 
 						<iframe
 							src="https://example.com"
@@ -979,8 +994,17 @@ function CreateStep2() {
 							style={ { aspectRatio: '16/9' } }
 						/>
 
-						<ResizeButtons />
+						{ isGenerating && (
+							<div className="absolute left-0 top-0 w-full h-full flex items-start justify-center">
+								<div className="absolute left-0 top-0 w-full h-full bg-black opacity-80" />
+
+								<ProgressBar
+									onFinish={ () => setHasGenerated( true ) }
+								/>
+							</div>
+						) }
 					</div>
+					{ ! isGenerating && <ResizeButtons /> }
 				</div>
 			</div>
 		</div>
