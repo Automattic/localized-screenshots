@@ -156,7 +156,7 @@ function Home() {
 							<svg
 								width="36"
 								height="36"
-								ariaHidden="true"
+								aria-hidden="true"
 								fill="none"
 								viewBox="0 0 36 36"
 							>
@@ -180,7 +180,7 @@ function Home() {
 							<svg
 								width="24"
 								height="24"
-								ariaHidden="true"
+								aria-hidden="true"
 								fill="none"
 								viewBox="0 0 24 24"
 							>
@@ -204,7 +204,7 @@ function Home() {
 							<svg
 								width="24"
 								height="24"
-								ariaHidden="true"
+								aria-hidden="true"
 								fill="none"
 								viewBox="0 0 24 24"
 							>
@@ -290,9 +290,10 @@ function EditItem() {
 				<input
 					className="w-full bg-gray-100 px-4 py-2 rounded"
 					value="https://wordpress.com/me/account"
+					readOnly
 				/>
 
-				<p class="text-xs text-slate-600 mt-4">
+				<p className="text-xs text-slate-600 mt-4">
 					<span className="p-1 rounded-md text-slate-500 bg-slate-200">
 						Case:
 					</span>{ ' ' }
@@ -642,7 +643,10 @@ function LanguagesSelector() {
 			</h4>
 
 			{ languages.map( ( lang ) => (
-				<label className="flex p-1 items-center cursor-pointer hover:bg-slate-700 hover:border-slate-600 rounded-sm">
+				<label
+					key={ lang.slug }
+					className="flex p-1 items-center cursor-pointer hover:bg-slate-700 hover:border-slate-600 rounded-sm"
+				>
 					<input
 						type="checkbox"
 						className="bg-slate-600 mr-2 rounded-sm"
@@ -669,7 +673,6 @@ function ProgressBar( { onFinish } ) {
 			setProgress( ( progress ) => {
 				if ( progress === mockSteps.length * languages.length - 1 ) {
 					clearInterval( interval );
-					onFinish && onFinish();
 					return progress;
 				}
 
@@ -677,6 +680,15 @@ function ProgressBar( { onFinish } ) {
 			} );
 		}, 100 );
 	}, [] );
+
+	React.useEffect( () => {
+		if (
+			onFinish &&
+			progress === mockSteps.length * languages.length - 1
+		) {
+			onFinish();
+		}
+	}, [ onFinish, progress ] );
 
 	const currentLanguageIndex = Math.floor( progress / 3 );
 	const progressPercentage = Math.round(
@@ -706,9 +718,9 @@ function ProgressBar( { onFinish } ) {
 				{ mockSteps
 					.slice( 0, ( progress % mockSteps.length ) + 1 )
 					.map( ( step ) => (
-						<>
+						<React.Fragment key={ step }>
 							<br /> &rsaquo; { step }
-						</>
+						</React.Fragment>
 					) ) }
 			</div>
 		</div>
