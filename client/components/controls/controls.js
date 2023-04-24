@@ -4,7 +4,6 @@ import { useCanvasStore, useScreenshotsStore } from '/state';
 import { languages } from '/lib/languages';
 import LockedScreenController from './controller';
 import UploadScreenshots from './upload-screenshots';
-import RecordActions from './record-actions';
 
 export default function Controls() {
 	const { lockedScreen, actions } = useCanvasStore();
@@ -83,10 +82,6 @@ export default function Controls() {
 						>
 							Take Screenshot
 						</button>
-					</li>
-
-					<li>
-						<RecordActions />
 					</li>
 				</>
 			) }
