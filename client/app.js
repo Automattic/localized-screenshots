@@ -5,6 +5,7 @@ import ErrorHandler from '/components/error-handler';
 import PageHome from '/pages/home';
 import PageCreate from '/pages/create';
 import PageEdit from '/pages/edit';
+import PageMockups from '/pages/mockups';
 
 export default function App() {
 	return (
@@ -16,6 +17,7 @@ export default function App() {
 					element={ <PageCreate /> }
 				/>
 				<Route path="/edit/:screenshotId" element={ <PageEdit /> } />
+				<Route path="/mockups/*" element={ <PageMockups /> } />
 			</Routes>
 
 			<ErrorHandler />
