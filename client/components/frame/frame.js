@@ -81,7 +81,7 @@ export default function Frame( { width = 1280, height = 720 } ) {
 	}, [] );
 
 	return (
-		<div style={ { textAlign: 'center' } }>
+		<div style={ { display: 'flex', justifyContent: 'center' } }>
 			<canvas
 				ref={ frame }
 				width={ width }

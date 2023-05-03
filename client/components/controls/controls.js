@@ -97,6 +97,7 @@ export default function Controls() {
 						id="locales"
 						onChange={ handleLocalesChange }
 						value={ locales }
+						style={ { height: 300 } }
 						multiple
 					>
 						{ languages.map( ( { slug, name } ) => (
