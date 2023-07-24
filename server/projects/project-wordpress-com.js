@@ -16,6 +16,10 @@ class ProjectWordPressCom extends Project {
 
 	async loadInitialPage() {
 		await this.login();
+		await this.page.waitForSelector( '.masterbar__item-me-label', {
+			state: 'attached',
+		} );
+		await this.page.goto( `${ this.config.url }` );
 	}
 
 	async login() {
@@ -28,18 +32,20 @@ class ProjectWordPressCom extends Project {
 	}
 
 	async changeLocale( locale ) {
-		await this.page.goto( `${ this.config.url }/me/account` );
-		await this.page.click( '.language-picker:not(.is-loading)' );
+		const page = await this.page.context().newPage();
 
-		await this.page.click( '.search-component__icon-navigation:visible' );
-		await this.page.fill( '.search-component__input:visible', locale );
-		await this.page.click(
+		await page.goto( `${ this.config.url }/me/account` );
+		await page.click( '.language-picker:not(.is-loading)' );
+
+		await page.click( '.search-component__icon-navigation:visible' );
+		await page.fill( '.search-component__input:visible', locale );
+		await page.click(
 			`.language-picker-component__language-buttons [lang=${ locale }]`
 		);
-		await this.page.click(
-			'.language-picker__modal-buttons .is-secondary'
-		);
-		await this.page.waitForSelector( '.language-picker:not(:disabled)' );
+		await page.click( '.language-picker__modal-buttons .is-secondary' );
+		await page.waitForSelector( '.language-picker:not(:disabled)' );
+
+		await page.close();
 	}
 
 	async generateLocalizedScreenshot( {
@@ -50,14 +56,17 @@ class ProjectWordPressCom extends Project {
 		actions,
 	} ) {
 		await this.changeLocale( locale );
-		await this.page.goto( url, { waitUntil: 'networkidle' } );
-		await this.page.waitForNavigation( { waitUntil: 'networkidle' } );
-		await this.page.evaluate(
+		const page = await this.page.context().newPage();
+		await page.goto( url, { waitUntil: 'networkidle' } );
+		await page.evaluate(
 			( scroll ) => window.scrollTo( scroll.scrollX, scroll.scrollY ),
 			{ scrollX, scrollY }
 		);
-		await this.doPageActions( actions );
-		return await this.page.screenshot();
+		await this.doPageActions( page, actions );
+		const screenshot = await page.screenshot();
+		await page.close();
+
+		return screenshot;
 	}
 }
 
