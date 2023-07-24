@@ -40,6 +40,7 @@ class Project {
 
 	async launchBrowser() {
 		this.browser = await chromium.launch();
+		this.context = await this.browser.newContext();
 
 		// Close browser instance when socket disconnects.
 		this.socket.on( 'disconnect', this.exit );
@@ -48,7 +49,7 @@ class Project {
 
 	async initPage() {
 		try {
-			this.page = await this.browser.newPage();
+			this.page = await this.context.newPage();
 
 			// Chrome Devtools Protocol Session
 			this.cdp = await this.page.context().newCDPSession( this.page );
@@ -167,22 +168,27 @@ class Project {
 
 	handleLocalizedScreenshotRequest = async ( { locales, page, actions } ) => {
 		for ( const locale of locales ) {
-			const screenshot = await this.generateLocalizedScreenshot( {
-				...page,
-				actions,
-				locale,
-			} );
-			const pageData = await this.getPageData();
-			const payload = {
-				data: `data:image/png;base64,${ screenshot.toString(
-					'base64'
-				) }`,
-				meta: {
+			try {
+				const screenshot = await this.generateLocalizedScreenshot( {
+					...page,
+					actions,
 					locale,
-					page: pageData,
-				},
-			};
-			this.socket.emit( 'page:localizedScreenshot', payload );
+				} );
+				const pageData = await this.getPageData();
+				const payload = {
+					data: `data:image/png;base64,${ screenshot.toString(
+						'base64'
+					) }`,
+					meta: {
+						locale,
+						page: pageData,
+					},
+				};
+				this.socket.emit( 'page:localizedScreenshot', payload );
+			} catch ( error ) {
+				// Failed to generate localized screenshot.
+				console.error( error );
+			}
 		}
 	};
 
@@ -190,7 +196,7 @@ class Project {
 		this.isRecordingActions = isRecordingActions;
 	};
 
-	async doPageActions( actions ) {
+	async doPageActions( page = this.page, actions ) {
 		if ( ! actions ) {
 			return;
 		}
@@ -198,7 +204,7 @@ class Project {
 		try {
 			for ( const action of actions ) {
 				if ( action.type === 'click' ) {
-					await this.page.click( action.selector, { timeout: 2000 } );
+					await page.click( action.selector, { timeout: 2000 } );
 				}
 			}
 		} catch ( error ) {
