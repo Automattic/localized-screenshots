@@ -4,4 +4,6 @@ import { createStoreSetter } from '/state/utils';
 export const useSessionStore = create( ( set ) => ( {
 	isReady: false,
 	setIsReady: createStoreSetter( set, 'isReady' ),
+	url: '',
+	setUrl: createStoreSetter( set, 'url' ),
 } ) );

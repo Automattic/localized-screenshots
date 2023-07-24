@@ -14,7 +14,7 @@ class Project {
 		fps: 30,
 	};
 	cursor = null;
-	isRecordingActions = false;
+	isRecordingActions = true;
 
 	constructor( socket, config = {} ) {
 		this.socket = socket;
@@ -57,6 +57,11 @@ class Project {
 				width: this.config.width,
 				height: this.config.height,
 			} );
+
+			// Emit URL changes.
+			this.page.on( 'framenavigated', () =>
+				this.socket.emit( 'page:location', this.page.url() )
+			);
 		} catch ( error ) {
 			console.log( error );
 		}

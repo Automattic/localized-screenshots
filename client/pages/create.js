@@ -5,12 +5,41 @@ import Nav from '/components/nav';
 import Editor, { EditorProvider } from '/components/editor';
 import Frame from '/components/frame';
 import { useCanvasStore, useSessionStore } from '/state';
-import { request } from '/web-sockets';
+import { client as wsClient, request } from '/web-sockets';
 
 function SessionController() {
 	const { project, resolution } = useParams();
-	const { setSize } = useCanvasStore();
-	const { setIsReady } = useSessionStore();
+	const { setSize, setActions, lockedScreen } = useCanvasStore();
+	const { setIsReady, setUrl, url } = useSessionStore();
+
+	const recordActionsHandler = React.useCallback(
+		( payload ) => {
+			setActions( ( actions ) => actions.concat( payload ) );
+		},
+		[ setActions ]
+	);
+
+	React.useEffect( () => {
+		wsClient.on( 'page:location', setUrl );
+		return () => wsClient.off( 'page:location', setUrl );
+	}, [ setUrl ] );
+
+	React.useEffect( () => {
+		if ( lockedScreen ) {
+			return;
+		}
+
+		setActions( [] );
+	}, [ url, lockedScreen ] );
+
+	React.useEffect( () => {
+		if ( lockedScreen ) {
+			return;
+		}
+
+		wsClient.on( 'page:action', recordActionsHandler );
+		return () => wsClient.off( 'page:action', recordActionsHandler );
+	}, [ recordActionsHandler, lockedScreen ] );
 
 	React.useEffect( () => {
 		let [ width, height ] = resolution.split( 'x' );
