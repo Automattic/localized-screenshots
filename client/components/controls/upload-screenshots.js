@@ -6,7 +6,7 @@ import { svgToPNGBase64 } from '/lib/helpers';
 import { useEditorContext } from '/components/editor';
 
 export default function UploadScreenshots() {
-	const { offset, actions } = useCanvasStore();
+	const { actions } = useCanvasStore();
 	const { screenshots, setSelectedScreenshotIndex } = useScreenshotsStore();
 	const editorRef = useEditorContext();
 	const { project, resolution } = useParams();
@@ -44,6 +44,7 @@ export default function UploadScreenshots() {
 			const canvas = document.createElement( 'canvas' );
 			const canvasContext = canvas.getContext( '2d' );
 			const screenshot = new Image();
+			const offset = screenshots[ screenshotIndex ].offset;
 
 			await new Promise( ( resolve ) => {
 				screenshot.src = screenshots[ screenshotIndex ].data;
@@ -105,7 +106,7 @@ export default function UploadScreenshots() {
 					);
 				} );
 		},
-		[ editorRef.current, screenshots, offset ]
+		[ editorRef.current, screenshots ]
 	);
 
 	const uploadScreenshots = useCallback( async () => {
@@ -158,7 +159,7 @@ export default function UploadScreenshots() {
 				JSON.stringify( {
 					annotations: screenshot.annotations,
 					actions,
-					offset,
+					offset: screenshot.offset,
 					page,
 					project: screenshotMetaProject,
 				} )
@@ -190,7 +191,7 @@ export default function UploadScreenshots() {
 		}
 
 		setIsLoading( false );
-	}, [ screenshots, getScreenshotWithAnnotationsBlob, offset ] );
+	}, [ screenshots, getScreenshotWithAnnotationsBlob ] );
 
 	return (
 		<>

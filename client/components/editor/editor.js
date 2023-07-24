@@ -43,7 +43,29 @@ function EditorHandle( { position, onChange = () => {} } ) {
 }
 
 function EditorHandles() {
-	const { offset, setOffset } = useCanvasStore();
+	const { offset: canvasOffset, setOffset: setCanvasOffset } =
+		useCanvasStore();
+	const { setScreenshots, selectedScreenshotIndex } = useScreenshotsStore();
+	const selectedScreenshot = useSelectedScreenshot();
+	const offset = selectedScreenshot
+		? selectedScreenshot.offset
+		: canvasOffset;
+	const setScreenshotOffset = React.useCallback(
+		( payload ) => {
+			setScreenshots( ( screenshots ) =>
+				set(
+					screenshots,
+					`[${ selectedScreenshotIndex }].offset`,
+					payload
+				)
+			);
+		},
+		[ selectedScreenshotIndex, setScreenshots ]
+	);
+	const setOffset = selectedScreenshot
+		? setScreenshotOffset
+		: setCanvasOffset;
+
 	const style = {
 		borderTopWidth: `${ offset.top }px`,
 		borderRightWidth: `${ offset.right }px`,
@@ -95,8 +117,7 @@ function EditorHandles() {
 
 export default function Editor() {
 	const { lockedScreen, setAnnotations, size } = useCanvasStore();
-	const { setScreenshots, selectedScreenshotIndex, sselected } =
-		useScreenshotsStore();
+	const { setScreenshots, selectedScreenshotIndex } = useScreenshotsStore();
 	const selectedScreenshot = useSelectedScreenshot();
 	const editorRef = useEditorContext();
 
@@ -171,7 +192,7 @@ export default function Editor() {
 				<Tldraw
 					showMenu={ false }
 					showPages={ false }
-					onMount={ ( editor ) => ( editorRef.current = editor ) }
+					onMount={ ( editor ) => ( editorRef.current = editor )  }
 					onChange={ handleEditorChange }
 				/>
 			</div>

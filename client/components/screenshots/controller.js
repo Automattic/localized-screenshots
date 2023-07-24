@@ -7,12 +7,13 @@ import { useEditorContext } from '/components/editor';
 
 export default function ScreenshotsController() {
 	const { setScreenshots } = useScreenshotsStore();
-	const { annotations } = useCanvasStore();
+	const { annotations, offset } = useCanvasStore();
 	const editorRef = useEditorContext();
 
 	const screenshotsHandler = React.useCallback(
 		( payload ) => {
-			payload.annotations = annotations;
+			payload.annotations = JSON.parse( JSON.stringify( annotations ) );
+			payload.offset = { ...offset };
 
 			// Re-align annotations for RTL locales.
 			if (
@@ -23,6 +24,12 @@ export default function ScreenshotsController() {
 					payload.annotations,
 					editorRef.current
 				);
+			}
+
+			// Adjust crop offset for RTL locales.
+			if ( getLanguageBySlug( payload?.meta?.locale )?.rtl ) {
+				payload.offset.left = offset.right;
+				payload.offset.right = offset.left;
 			}
 
 			setScreenshots( ( screenshots ) => {
@@ -47,7 +54,7 @@ export default function ScreenshotsController() {
 				return screenshots.concat( payload );
 			} );
 		},
-		[ setScreenshots, annotations ]
+		[ setScreenshots, annotations, offset ]
 	);
 
 	React.useEffect( () => {
